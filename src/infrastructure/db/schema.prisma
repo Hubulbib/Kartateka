@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider  = "prisma-client-js"
+  migration = "./src/infrastructure/db/migrations/"
 }
 
 datasource db {
@@ -7,63 +8,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model users {
+  user_id       String          @id
+  type          usertype        @default(basic)
+  views         views[]
+  favorites     favorites[]
+  organizations organizations[]
+}
+
+model views {
+  view_id   Int         @default(autoincrement())
+  user_id   String
+  post_id   Int
+  users     users       @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "views_user_id_foreign")
+  posts     posts       @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "views_post_id_foreign")
+
+  @@id([view_id, user_id, post_id])
+}
+
+model favorites {
+  favorite_id       Int           @default(autoincrement())
+  user_id           String
+  organization_id   Int
+  users             users         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__user_id_foreign")
+  organizations     organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__organization_id_foreign")
+
+  @@id([user_id, favorite_id, organization_id])
+}
+
 model media {
-  media_id   BigInt    @id(map: "Media_pkey")
-  url        String    @unique(map: "media_url_unique") @db.VarChar(10000)
-  type       mediatype
-  created_at DateTime  @db.Timestamptz(0)
-  post_id    BigInt
-  posts      posts     @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "media_post_id_foreign")
+  media_id   Int        @id @default(autoincrement())
+  url        String     @unique(map: "media_url_unique") @db.VarChar(10000)
+  type       mediatype?
+  created_at DateTime   @db.Timestamptz(0) @default(now())
+  post_id    Int
+  posts      posts      @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "media_post_id_foreign")
 }
 
 model organizations {
-  organization_id     BigInt                @id(map: "Organizations_pkey")
-  name                String                @unique(map: "organizations_name_unique") @db.VarChar(255)
-  type                organizationtype
-  address             String                @db.VarChar(255)
-  organizations_tools organizations_tools[]
-  posts               posts[]
-  tools               tools[]
-}
-
-model organizations_tools {
-  id              BigInt        @id(map: "Organizations_tools_pkey")
-  organization_id BigInt
-  tool_id         BigInt
-  organizations   organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "organizations_tools_organization_id_foreign")
+  organization_id Int               @id @default(autoincrement())
+  name            String            @unique(map: "organizations_name_unique") @db.VarChar(255)
+  type            organizationtype
+  address         String            @db.VarChar(255)
+  user_id         String
+  users           users             @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "organizations_user_id_foreign")
+  posts           posts[]
+  tools           tools[]
+  favorites       favorites[]
 }
 
 model posts {
-  post_id         BigInt        @id(map: "Posts_pkey")
-  organization_id BigInt
+  post_id         Int           @id @default(autoincrement())
+  organization_id Int
   title           String        @db.VarChar(255)
   text            String?
-  created_at      DateTime      @db.Timestamptz(0)
-  updated_at      DateTime      @db.Timestamptz(0)
+  created_at      DateTime      @db.Timestamptz(0) @default(now())
+  updated_at      DateTime      @db.Timestamptz(0) @default(now())
   media           media[]
   organizations   organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_organization_id_foreign")
   posts_tags      posts_tags[]
+  views           views[]
 }
 
 model posts_tags {
-  id      BigInt @id(map: "Posts_tags_pkey")
-  post_id BigInt
-  tag_id  BigInt
-  posts   posts  @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_post_id_foreign")
-  tags    tags   @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_tag_id_foreign")
+  id      Int   @default(autoincrement())
+  post_id Int
+  tag_id  Int
+  posts   posts @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_post_id_foreign")
+  tags    tags  @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_tag_id_foreign")
+
+  @@id([id, post_id, tag_id])
 }
 
 model tags {
-  tag_id     BigInt       @id(map: "Tags_pkey")
+  tag_id     Int          @id @default(autoincrement())
   name       String       @unique(map: "tags_name_unique") @db.VarChar(255)
   posts_tags posts_tags[]
 }
 
 model tools {
-  tool_id         BigInt        @id
+  tool_id         Int           @id @default(autoincrement())
   name            BigInt        @unique(map: "tools_name_unique")
   content         Json
-  organization_id BigInt
+  organization_id Int
   organizations   organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "tools_organization_id_foreign")
 }
 
@@ -78,4 +105,9 @@ enum organizationtype {
   cafe
   restaurant
   tea
+}
+
+enum usertype {
+  basic
+  business
 }

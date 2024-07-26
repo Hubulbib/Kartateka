@@ -6,6 +6,7 @@ export class PostEntity {
     readonly organizationId: number,
     readonly title: string,
     readonly text: string,
+    readonly views: number,
     readonly createdAt: Date,
     readonly updatedAt: Date,
     readonly tags: string[],

@@ -33,7 +33,7 @@ model favorites {
   users             users         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__user_id_foreign")
   organizations     organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__organization_id_foreign")
 
-  @@id([user_id, favorite_id, organization_id])
+  @@id([favorite_id, user_id, organization_id])
 }
 
 model media {
@@ -88,7 +88,7 @@ model tags {
 
 model tools {
   tool_id         Int           @id @default(autoincrement())
-  name            BigInt        @unique(map: "tools_name_unique")
+  name            String        @unique(map: "tools_name_unique")
   content         Json
   organization_id Int
   organizations   organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "tools_organization_id_foreign")

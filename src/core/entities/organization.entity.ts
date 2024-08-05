@@ -5,9 +5,16 @@ export class OrganizationEntity {
   constructor(
     readonly organizationId: number,
     readonly name: string,
-    readonly type: string,
+    readonly type: EOrganizationType,
     readonly address: string,
     readonly tools: ToolEntity[],
     readonly posts: PostEntity[],
   ) {}
+}
+
+export enum EOrganizationType {
+  coffee = 'coffee',
+  cafe = 'cafe',
+  restaurant = 'restaurant',
+  tea = 'tea',
 }

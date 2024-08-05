@@ -10,15 +10,15 @@ export class OrganizationService {
     return await this.organizationRepository.getOneById(organizationId)
   }
 
-  createOne = async (createBody: CreateBodyDto): Promise<OrganizationEntity> => {
-    return await this.organizationRepository.createOne(createBody)
+  createOne = async (userId: string, createBody: CreateBodyDto): Promise<OrganizationEntity> => {
+    return await this.organizationRepository.createOne(userId, createBody)
   }
 
-  editOne = async (organizationId: number, editBody: EditBodyDto): Promise<void> => {
-    await this.organizationRepository.editOne(organizationId, editBody)
+  editOne = async (userId: string, organizationId: number, editBody: EditBodyDto): Promise<void> => {
+    await this.organizationRepository.editOne(userId, organizationId, editBody)
   }
 
-  removeOne = async (organizationId: number): Promise<void> => {
-    await this.organizationRepository.removeOne(organizationId)
+  removeOne = async (userId: string, organizationId: number): Promise<void> => {
+    await this.organizationRepository.removeOne(userId, organizationId)
   }
 }

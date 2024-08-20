@@ -4,9 +4,12 @@ import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-b
 import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto'
 import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository'
 import { OrganizationMapper } from '../mappers/organization.mapper'
+import { EUserType } from '../../../core/entities/user.entity'
+import { UserRepositoryImpl } from './user.repository.impl'
 import { ToolRepositoryImpl } from './tool.repository.impl'
 import { PostRepositoryImpl } from './post.repository.impl'
 import { FavoriteRepository } from './favorite.repository'
+import { ApiError } from '../../exceptions/api.exception'
 
 export class OrganizationRepositoryImpl implements OrganizationRepository {
   constructor(
@@ -18,6 +21,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     private readonly postTagRepository: Prisma.posts_tagsDelegate,
     private readonly mediaRepository: Prisma.mediaDelegate,
     private readonly favoriteRepository: Prisma.favoritesDelegate,
+    private readonly userRepository: Prisma.usersDelegate,
   ) {}
 
   async getAll(userId: string): Promise<OrganizationEntity[]> {
@@ -34,6 +38,23 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
   }
 
   async createOne(userId: string, createBody: CreateBodyDto): Promise<OrganizationEntity> {
+    const organizationCount = await this.organizationRepository.count({ where: { user_id: userId } })
+    if (organizationCount >= 1) {
+      const userType = await new UserRepositoryImpl(
+        this.userRepository,
+        this.organizationRepository,
+        this.toolRepository,
+        this.postRepository,
+        this.mediaRepository,
+        this.viewRepository,
+        this.favoriteRepository,
+        this.postTagRepository,
+        this.tagRepository,
+      ).getType(userId)
+      if (userType !== EUserType.business) {
+        throw ApiError.NotAccess('У вас нет бизнес аккаунта')
+      }
+    }
     const organization = await this.organizationRepository.create({
       data: {
         ...createBody,
@@ -46,24 +67,16 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
 
   async editOne(userId: string, organizationId: number, editBody: EditBodyDto): Promise<void> {
     const { tools, ...organizationEditBody } = editBody
-    const organization = await this.organizationRepository.findFirst({
-      where: { organization_id: organizationId },
-    })
-    if (organization.user_id !== userId) {
-      throw Error('Это не ваша организация')
-    }
+    await this.checkAccess(userId, organizationId)
     await this.organizationRepository.update({
       where: { organization_id: organizationId },
       data: { ...organizationEditBody, type: EOrganizationType[organizationEditBody.type] },
     })
-    await new ToolRepositoryImpl(this.toolRepository).editMany(organization.organization_id, editBody.tools)
+    await new ToolRepositoryImpl(this.toolRepository).editMany(organizationId, editBody.tools)
   }
 
   async removeOne(userId: string, organizationId: number): Promise<void> {
-    const organization = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } })
-    if (organization.user_id !== userId) {
-      throw Error('Это не ваша организация')
-    }
+    await this.checkAccess(userId, organizationId)
     await new ToolRepositoryImpl(this.toolRepository).removeMany(organizationId)
     await new FavoriteRepository(this.favoriteRepository).removeManyOfOrganization(organizationId)
     await this.organizationRepository.delete({ where: { organization_id: organizationId } })
@@ -89,5 +102,12 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
         this.tagRepository,
       ).getAll(organization.organization_id),
     )
+  }
+
+  private async checkAccess(userId: string, organizationId: number) {
+    const user = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } }).users()
+    if (user.user_id !== userId) {
+      throw ApiError.NotAccess('Это не ваша организация')
+    }
   }
 }

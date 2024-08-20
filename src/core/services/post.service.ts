@@ -18,11 +18,11 @@ export class PostService {
     return await this.postRepository.createOne(organizationId, createBody)
   }
 
-  editOne = async (postId: number, editBody: EditBodyDto): Promise<void> => {
-    await this.postRepository.editOne(postId, editBody)
+  editOne = async (userId: string, postId: number, editBody: EditBodyDto): Promise<void> => {
+    await this.postRepository.editOne(userId, postId, editBody)
   }
 
-  removeOne = async (postId: number): Promise<void> => {
-    await this.postRepository.removeOne(postId)
+  removeOne = async (userId: string, postId: number): Promise<void> => {
+    await this.postRepository.removeOne(userId, postId)
   }
 }

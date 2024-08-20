@@ -2,6 +2,9 @@ import express from 'express'
 import 'dotenv/config.js'
 import cors from 'cors'
 import { prisma } from './infrastructure/db'
+import { userRouter } from './infrastructure/routers/user.router'
+import { postRouter } from './infrastructure/routers/post.router'
+import { organizationRouter } from './infrastructure/routers/organization.router'
 
 const app = express()
 const PORT = process.env.PORT
@@ -15,6 +18,9 @@ app.use(
 )
 
 // API
+app.use('/api/user', userRouter)
+app.use('/api/post', postRouter)
+app.use('/api/organization', organizationRouter)
 
 app
   .listen(PORT, () => {

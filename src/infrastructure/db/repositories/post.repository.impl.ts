@@ -8,6 +8,7 @@ import { ViewRepository } from './view.repository'
 import { TagRepository } from './tag.repository'
 import { PostMapper } from '../mappers/post.mapper'
 import { PostTagRepository } from './post-tag.repository'
+import { ApiError } from '../../exceptions/api.exception'
 
 export class PostRepositoryImpl implements PostRepository {
   constructor(
@@ -59,7 +60,8 @@ export class PostRepositoryImpl implements PostRepository {
     await new ViewRepository(this.viewRepository).setViewed(postId, userId)
   }
 
-  async editOne(postId: number, editBody: EditBodyDto): Promise<void> {
+  async editOne(userId: string, postId: number, editBody: EditBodyDto): Promise<void> {
+    await this.checkAccess(userId, postId)
     const { media, tags, ...postEditBody } = editBody
     // updating post
     await this.postRepository.update({ where: { post_id: postId }, data: { ...postEditBody, updated_at: new Date() } })
@@ -69,16 +71,17 @@ export class PostRepositoryImpl implements PostRepository {
     await new MediaRepositoryImpl(this.mediaRepository).editMany(postId, media)
   }
 
-  async removeOne(postId: number): Promise<void> {
+  async removeOne(userId: string, postId: number): Promise<void> {
+    await this.checkAccess(userId, postId)
     await new PostTagRepository(this.postsTagsRepository).removeManyOfPost(postId)
     await new MediaRepositoryImpl(this.mediaRepository).removeMany(postId)
     await this.postRepository.delete({ where: { post_id: postId } })
   }
 
-  async removeMany(organizationId: number): Promise<void> {
+  async removeMany(userId: string, organizationId: number): Promise<void> {
     const posts = await this.postRepository.findMany({ where: { organization_id: organizationId } })
     for (const el of posts) {
-      await this.removeOne(el.post_id)
+      await this.removeOne(userId, el.post_id)
     }
   }
 
@@ -91,5 +94,15 @@ export class PostRepositoryImpl implements PostRepository {
       post.posts_tags.map((el) => el.tags.name),
       await new MediaRepositoryImpl(this.mediaRepository).getAll(post.post_id),
     )
+  }
+
+  private async checkAccess(userId: string, postId: number) {
+    const user = await this.postRepository
+      .findFirst({ where: { post_id: postId } })
+      .organizations()
+      .users()
+    if (user.user_id !== userId) {
+      throw ApiError.NotAccess('Это не ваша запись')
+    }
   }
 }

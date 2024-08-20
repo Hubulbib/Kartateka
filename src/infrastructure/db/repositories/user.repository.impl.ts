@@ -50,6 +50,7 @@ export class UserRepositoryImpl implements UserRepository {
             this.postTagRepository,
             this.mediaRepository,
             this.favoriteRepository,
+            this.userRepository,
           ).getOneById(el.organization_id),
       ),
     )
@@ -87,6 +88,7 @@ export class UserRepositoryImpl implements UserRepository {
         this.postTagRepository,
         this.mediaRepository,
         this.favoriteRepository,
+        this.userRepository,
       ).getAll(user.user_id),
       await this.getViewedList(user.user_id),
       await this.getFavoriteList(user.user_id),

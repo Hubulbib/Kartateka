@@ -18,12 +18,6 @@ router.post(
 )
 
 router.get(
-  '/:id',
-  [AuthMiddleware],
-  async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.getOneById(req, res, next),
-)
-
-router.get(
   '/favorite-list',
   [AuthMiddleware],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.getFavoriteList(req, res, next),
@@ -39,6 +33,12 @@ router.get(
   '/type',
   [AuthMiddleware],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.getType(req, res, next),
+)
+
+router.get(
+  '/:id',
+  [AuthMiddleware],
+  async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.getOneById(req, res, next),
 )
 
 export const userRouter = router

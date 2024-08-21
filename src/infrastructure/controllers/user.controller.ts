@@ -36,7 +36,7 @@ class UserController {
         user: { uuid },
       } = req.auth
       const userData = await this.userService.getOneById(uuid)
-      res.status(201).json({ data: { ...userData } })
+      res.json({ data: { ...userData } })
     } catch (err) {
       next(err)
     }
@@ -48,7 +48,7 @@ class UserController {
         user: { uuid },
       } = req.auth
       const userData = await this.userService.getFavoriteList(uuid)
-      res.status(201).json({ data: { ...userData } })
+      res.json({ data: { ...userData } })
     } catch (err) {
       next(err)
     }
@@ -60,7 +60,7 @@ class UserController {
         user: { uuid },
       } = req.auth
       const userData = await this.userService.getViewedList(uuid)
-      res.status(201).json({ data: { ...userData } })
+      res.json({ data: { ...userData } })
     } catch (err) {
       next(err)
     }
@@ -72,7 +72,7 @@ class UserController {
         user: { uuid },
       } = req.auth
       const userData = await this.userService.getType(uuid)
-      res.status(201).json({ data: { userType: userData } })
+      res.json({ data: { userType: userData } })
     } catch (err) {
       next(err)
     }

@@ -23,9 +23,8 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly tagRepository: Prisma.tagsDelegate,
   ) {}
   async register(registerBody: RegisterBodyDto): Promise<UserEntity> {
-    return await this.convertToFullEntity(
-      await this.userRepository.create({ data: { ...registerBody, user_id: registerBody.userId } }),
-    )
+    const { userId, ...body } = registerBody
+    return await this.convertToFullEntity(await this.userRepository.create({ data: { ...body, user_id: userId } }))
   }
 
   async getSubscribe(userId: string): Promise<void> {

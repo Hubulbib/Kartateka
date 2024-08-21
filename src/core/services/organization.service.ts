@@ -14,6 +14,14 @@ export class OrganizationService {
     return await this.organizationRepository.createOne(userId, createBody)
   }
 
+  setFavorite = async (userId: string, organizationId: number): Promise<void> => {
+    return await this.organizationRepository.setFavorite(userId, organizationId)
+  }
+
+  setNotFavorite = async (userId: string, favoriteId: number, organizationId: number): Promise<void> => {
+    return await this.organizationRepository.setNotFavorite(userId, favoriteId, organizationId)
+  }
+
   editOne = async (userId: string, organizationId: number, editBody: EditBodyDto): Promise<void> => {
     await this.organizationRepository.editOne(userId, organizationId, editBody)
   }

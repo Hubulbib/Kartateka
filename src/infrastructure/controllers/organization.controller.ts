@@ -29,6 +29,32 @@ class OrganizationController {
     }
   }
 
+  async setFavorite(req: IAuthRequest, res: Response, next: NextFunction) {
+    try {
+      const {
+        user: { uuid },
+      } = req.auth
+      const { id } = req.params
+      await this.organizationService.setFavorite(uuid, +id)
+      res.status(200).end()
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async setNotFavorite(req: IAuthRequest, res: Response, next: NextFunction) {
+    try {
+      const {
+        user: { uuid },
+      } = req.auth
+      const { id, orgId } = req.params
+      await this.organizationService.setNotFavorite(uuid, +id, +orgId)
+      res.status(200).end()
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async editOne(req: IAuthRequest, res: Response, next: NextFunction) {
     try {
       const {
@@ -37,7 +63,7 @@ class OrganizationController {
       const { id } = req.params
       const editBody = req.body
       await this.organizationService.editOne(uuid, +id, editBody)
-      res.status(200)
+      res.status(200).end()
     } catch (err) {
       next(err)
     }
@@ -50,7 +76,7 @@ class OrganizationController {
       } = req.auth
       const { id } = req.params
       await this.organizationService.removeOne(uuid, +id)
-      res.status(200)
+      res.status(200).end()
     } catch (err) {
       next(err)
     }

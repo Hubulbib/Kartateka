@@ -38,6 +38,8 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
   }
 
   async createOne(userId: string, createBody: CreateBodyDto): Promise<OrganizationEntity> {
+    const { tools, ...body } = createBody
+
     const organizationCount = await this.organizationRepository.count({ where: { user_id: userId } })
     if (organizationCount >= 1) {
       const userType = await new UserRepositoryImpl(
@@ -57,11 +59,15 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     }
     const organization = await this.organizationRepository.create({
       data: {
-        ...createBody,
-        type: EOrganizationType[createBody.type],
+        ...body,
+        type: EOrganizationType[body.type],
         users: { connect: { user_id: userId } },
       },
     })
+
+    // creating tools of organization
+    await new ToolRepositoryImpl(this.toolRepository).createMany(organization.organization_id, tools)
+
     return await this.convertToFullEntity(organization)
   }
 

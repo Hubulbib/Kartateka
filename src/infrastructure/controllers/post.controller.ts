@@ -7,21 +7,11 @@ import { PostRepositoryImpl } from '../db/repositories/post.repository.impl'
 class PostController {
   constructor(private readonly postService: PostService) {}
 
-  async getAll(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params
-      const organizationData = await this.postService.getAll(+id)
-      res.status(201).json({ data: { ...organizationData } })
-    } catch (err) {
-      next(err)
-    }
-  }
-
   async getOneById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params
-      const organizationData = await this.postService.getOneById(+id)
-      res.status(201).json({ data: { ...organizationData } })
+      const postData = await this.postService.getOneById(+id)
+      res.status(201).json({ data: { ...postData } })
     } catch (err) {
       next(err)
     }
@@ -31,8 +21,19 @@ class PostController {
     try {
       const { id } = req.params
       const createBody = req.body
-      const organizationData = await this.postService.createOne(+id, createBody)
-      res.status(201).json({ data: { ...organizationData } })
+      const postData = await this.postService.createOne(+id, createBody)
+      res.status(201).json({ data: { ...postData } })
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async setViewed(req: IAuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params
+      const { uuid } = req.auth.user
+      await this.postService.setViewed(uuid, +id)
+      res.status(200).end()
     } catch (err) {
       next(err)
     }
@@ -44,7 +45,7 @@ class PostController {
       const editBody = req.body
       const { uuid } = req.auth.user
       await this.postService.editOne(uuid, +id, editBody)
-      res.status(200)
+      res.status(200).end()
     } catch (err) {
       next(err)
     }
@@ -55,7 +56,7 @@ class PostController {
       const { id } = req.params
       const { uuid } = req.auth.user
       await this.postService.removeOne(uuid, +id)
-      res.status(200)
+      res.status(200).end()
     } catch (err) {
       next(err)
     }

@@ -11,11 +11,11 @@ router.post(
   async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.register(req, res, next),
 )
 
-router.post(
+/*router.post(
   '/subscribe',
   [AuthMiddleware],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.getSubscribe(req, res, next),
-)
+)*/
 
 router.get(
   '/favorite-list',

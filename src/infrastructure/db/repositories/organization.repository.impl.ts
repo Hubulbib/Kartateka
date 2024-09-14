@@ -5,24 +5,11 @@ import { CreateBodyDto } from '../../../core/repositories/organization/dtos/crea
 import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository'
 import { OrganizationMapper } from '../mappers/organization.mapper'
 import { EUserType } from '../../../core/entities/user.entity'
-import { UserRepositoryImpl } from './user.repository.impl'
-import { ToolRepositoryImpl } from './tool.repository.impl'
-import { PostRepositoryImpl } from './post.repository.impl'
-import { FavoriteRepository } from './favorite.repository'
 import { ApiError } from '../../exceptions/api.exception'
+import { FactoryRepos } from './index'
 
 export class OrganizationRepositoryImpl implements OrganizationRepository {
-  constructor(
-    private readonly organizationRepository: Prisma.organizationsDelegate,
-    private readonly toolRepository: Prisma.toolsDelegate,
-    private readonly viewRepository: Prisma.viewsDelegate,
-    private readonly tagRepository: Prisma.tagsDelegate,
-    private readonly postRepository: Prisma.postsDelegate,
-    private readonly postTagRepository: Prisma.posts_tagsDelegate,
-    private readonly mediaRepository: Prisma.mediaDelegate,
-    private readonly favoriteRepository: Prisma.favoritesDelegate,
-    private readonly userRepository: Prisma.usersDelegate,
-  ) {}
+  constructor(private readonly organizationRepository: Prisma.organizationsDelegate) {}
 
   async getAll(userId: string): Promise<OrganizationEntity[]> {
     return Promise.all(
@@ -42,17 +29,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
 
     const organizationCount = await this.organizationRepository.count({ where: { user_id: userId } })
     if (organizationCount >= 1) {
-      const userType = await new UserRepositoryImpl(
-        this.userRepository,
-        this.organizationRepository,
-        this.toolRepository,
-        this.postRepository,
-        this.mediaRepository,
-        this.viewRepository,
-        this.favoriteRepository,
-        this.postTagRepository,
-        this.tagRepository,
-      ).getType(userId)
+      const userType = await FactoryRepos.getUserRepository().getType(userId)
       if (userType !== EUserType.business) {
         throw ApiError.NotAccess('У вас нет бизнес аккаунта')
       }
@@ -66,51 +43,43 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     })
 
     // creating tools of organization
-    await new ToolRepositoryImpl(this.toolRepository).createMany(organization.organization_id, tools)
+    await FactoryRepos.getToolRepository().createMany(organization.organization_id, tools)
 
     return await this.convertToFullEntity(organization)
   }
 
-  async editOne(userId: string, organizationId: number, editBody: EditBodyDto): Promise<void> {
+  async editOne(organizationId: number, editBody: EditBodyDto): Promise<void> {
     const { tools, ...organizationEditBody } = editBody
-    await this.checkAccess(userId, organizationId)
     await this.organizationRepository.update({
       where: { organization_id: organizationId },
       data: { ...organizationEditBody, type: EOrganizationType[organizationEditBody.type] },
     })
-    await new ToolRepositoryImpl(this.toolRepository).editMany(organizationId, editBody.tools)
+    await FactoryRepos.getToolRepository().editMany(organizationId, editBody.tools)
   }
 
-  async removeOne(userId: string, organizationId: number): Promise<void> {
-    await this.checkAccess(userId, organizationId)
-    await new ToolRepositoryImpl(this.toolRepository).removeMany(organizationId)
-    await new FavoriteRepository(this.favoriteRepository).removeManyOfOrganization(organizationId)
+  async removeOne(organizationId: number): Promise<void> {
+    await FactoryRepos.getToolRepository().removeMany(organizationId)
+    await FactoryRepos.getFavoriteRepository().removeManyOfOrganization(organizationId)
     await this.organizationRepository.delete({ where: { organization_id: organizationId } })
   }
 
   async setFavorite(userId: string, organizationId: number): Promise<void> {
-    await new FavoriteRepository(this.favoriteRepository).createOne(userId, organizationId)
+    await FactoryRepos.getFavoriteRepository().createOne(userId, organizationId)
   }
 
   async setNotFavorite(userId: string, favoriteId: number, organizationId: number): Promise<void> {
-    await new FavoriteRepository(this.favoriteRepository).removeOne(userId, favoriteId, organizationId)
+    await FactoryRepos.getFavoriteRepository().removeOne(userId, favoriteId, organizationId)
   }
 
   private async convertToFullEntity(organization: organizations): Promise<OrganizationEntity> {
     return OrganizationMapper.toDomain(
       organization,
-      await new ToolRepositoryImpl(this.toolRepository).getAll(organization.organization_id),
-      await new PostRepositoryImpl(
-        this.postRepository,
-        this.postTagRepository,
-        this.viewRepository,
-        this.mediaRepository,
-        this.tagRepository,
-      ).getAll(organization.organization_id),
+      await FactoryRepos.getToolRepository().getAll(organization.organization_id),
+      await FactoryRepos.getPostRepository().getAll(organization.organization_id),
     )
   }
 
-  private async checkAccess(userId: string, organizationId: number) {
+  async checkAccess(userId: string, organizationId: number): Promise<void> {
     const user = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } }).users()
     if (user.user_id !== userId) {
       throw ApiError.NotAccess('Это не ваша организация')

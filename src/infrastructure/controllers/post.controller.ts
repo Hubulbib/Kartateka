@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { prisma } from '../db'
 import { PostService } from '../../core/services/post.service'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { PostRepositoryImpl } from '../db/repositories/post.repository.impl'
+import { FactoryRepos } from '../db/repositories'
 
 class PostController {
   constructor(private readonly postService: PostService) {}
@@ -63,6 +62,4 @@ class PostController {
   }
 }
 
-export const postController = new PostController(
-  new PostService(new PostRepositoryImpl(prisma.posts, prisma.posts_tags, prisma.views, prisma.media, prisma.tags)),
-)
+export const postController = new PostController(new PostService(FactoryRepos.getPostRepository()))

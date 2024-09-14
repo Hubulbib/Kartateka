@@ -23,10 +23,12 @@ export class OrganizationService {
   }
 
   editOne = async (userId: string, organizationId: number, editBody: EditBodyDto): Promise<void> => {
-    await this.organizationRepository.editOne(userId, organizationId, editBody)
+    await this.organizationRepository.checkAccess(userId, organizationId)
+    await this.organizationRepository.editOne(organizationId, editBody)
   }
 
   removeOne = async (userId: string, organizationId: number): Promise<void> => {
-    await this.organizationRepository.removeOne(userId, organizationId)
+    await this.organizationRepository.checkAccess(userId, organizationId)
+    await this.organizationRepository.removeOne(organizationId)
   }
 }

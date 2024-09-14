@@ -3,6 +3,7 @@ import { prisma } from '../db'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
 import { OrganizationService } from '../../core/services/organization.service'
 import { OrganizationRepositoryImpl } from '../db/repositories/organization.repository.impl'
+import { FactoryRepos } from '../db/repositories'
 
 class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
@@ -84,17 +85,5 @@ class OrganizationController {
 }
 
 export const organizationController = new OrganizationController(
-  new OrganizationService(
-    new OrganizationRepositoryImpl(
-      prisma.organizations,
-      prisma.tools,
-      prisma.views,
-      prisma.tags,
-      prisma.posts,
-      prisma.posts_tags,
-      prisma.media,
-      prisma.favorites,
-      prisma.users,
-    ),
-  ),
+  new OrganizationService(FactoryRepos.getOrganizationRepository()),
 )

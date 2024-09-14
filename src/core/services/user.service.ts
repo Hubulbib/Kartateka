@@ -11,9 +11,9 @@ export class UserService {
     return await this.userRepository.register(registerBody)
   }
 
-  getSubscribe = async (userId: string): Promise<void> => {
+  /*getSubscribe = async (userId: string): Promise<void> => {
     await this.userRepository.getSubscribe(userId)
-  }
+  }*/
 
   getOneById = async (userId: string): Promise<UserEntity> => {
     return await this.userRepository.getOneById(userId)
@@ -26,6 +26,7 @@ export class UserService {
     return await this.userRepository.getViewedList(userId)
   }
   getType = async (userId: string): Promise<EUserType> => {
-    return await this.userRepository.getType(userId)
+    const type = await this.userRepository.getType(userId)
+    return EUserType[type] || EUserType.basic
   }
 }

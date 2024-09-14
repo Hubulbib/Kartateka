@@ -1,8 +1,7 @@
 import { Response, NextFunction } from 'express'
-import { prisma } from '../db'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
 import { UserService } from '../../core/services/user.service'
-import { UserRepositoryImpl } from '../db/repositories/user.repository.impl'
+import { FactoryRepos } from '../db/repositories'
 
 class UserController {
   constructor(private readonly userService: UserService) {}
@@ -18,7 +17,7 @@ class UserController {
     }
   }
 
-  async getSubscribe(req: IAuthRequest, res: Response, next: NextFunction) {
+  /*async getSubscribe(req: IAuthRequest, res: Response, next: NextFunction) {
     try {
       const {
         user: { uuid },
@@ -28,7 +27,7 @@ class UserController {
     } catch (err) {
       next(err)
     }
-  }
+  }*/
 
   async getOneById(req: IAuthRequest, res: Response, next: NextFunction) {
     try {
@@ -79,18 +78,4 @@ class UserController {
   }
 }
 
-export const userController = new UserController(
-  new UserService(
-    new UserRepositoryImpl(
-      prisma.users,
-      prisma.organizations,
-      prisma.tools,
-      prisma.posts,
-      prisma.media,
-      prisma.views,
-      prisma.favorites,
-      prisma.posts_tags,
-      prisma.tags,
-    ),
-  ),
-)
+export const userController = new UserController(new UserService(FactoryRepos.getUserRepository()))

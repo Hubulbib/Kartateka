@@ -7,7 +7,8 @@ export interface PostRepository {
   getOneById: (postId: number) => Promise<PostEntity>
   createOne: (organizationId: number, createBody: CreateBodyDto) => Promise<PostEntity>
   setViewed: (postId: number, userId: string) => Promise<void>
-  editOne: (userId: string, postId: number, editBody: EditBodyDto) => Promise<void>
-  removeOne: (userId: string, postId: number) => Promise<void>
-  removeMany: (userId: string, organizationId: number) => Promise<void>
+  editOne: (postId: number, editBody: EditBodyDto) => Promise<void>
+  removeOne: (postId: number) => Promise<void>
+  removeMany: (organizationId: number) => Promise<void>
+  checkAccess: (userId: string, postId: number) => Promise<void>
 }

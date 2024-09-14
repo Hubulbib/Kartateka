@@ -1,11 +1,8 @@
 import { Prisma, tags } from '@prisma/client'
-import { PostTagRepository } from './post-tag.repository'
+import { FactoryRepos } from './index'
 
 export class TagRepository {
-  constructor(
-    private readonly tagRepository: Prisma.tagsDelegate,
-    private readonly postsTagsRepository: Prisma.posts_tagsDelegate,
-  ) {}
+  constructor(private readonly tagRepository: Prisma.tagsDelegate) {}
 
   async createManyForPost(postId: number, tags: string[]): Promise<tags[]> {
     const tagCorrectList = tags.filter((el) => this.isCorrectTag(el))
@@ -15,13 +12,13 @@ export class TagRepository {
     })
 
     // creating in join table
-    await new PostTagRepository(this.postsTagsRepository).createManyForPost(postId, createdTags)
+    await FactoryRepos.getPostsTagsRepository().createManyForPost(postId, createdTags)
 
     return createdTags
   }
 
   async removeManyOfPost(postId: number): Promise<void> {
-    await new PostTagRepository(this.postsTagsRepository).removeManyOfPost(postId)
+    await FactoryRepos.getPostsTagsRepository().removeManyOfPost(postId)
   }
 
   async editMany(postId: number, tags: string[]): Promise<void> {

@@ -2,5 +2,5 @@
 node_modules
 build
 src/infrastructure/db/migrations/*/
-
+src/infrastructure/storage/static/*/
 .env

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { PostService } from '../../core/services/post.service'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
 import { FactoryRepos } from '../db/repositories'
+import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
 
 class PostController {
   constructor(private readonly postService: PostService) {}
@@ -20,7 +21,8 @@ class PostController {
     try {
       const { id } = req.params
       const createBody = req.body
-      const postData = await this.postService.createOne(+id, createBody)
+      const { media } = req.files
+      const postData = await this.postService.createOne(+id, createBody, Array.isArray(media) ? [...media] : [media])
       res.status(201).json({ data: { ...postData } })
     } catch (err) {
       next(err)
@@ -41,9 +43,10 @@ class PostController {
   async editOne(req: IAuthRequest, res: Response, next: NextFunction) {
     try {
       const { id } = req.params
-      const editBody = req.body
       const { uuid } = req.auth.user
-      await this.postService.editOne(uuid, +id, editBody)
+      const editBody = req.body
+      const { media } = req.files
+      await this.postService.editOne(uuid, +id, editBody, Array.isArray(media) ? [...media] : [media])
       res.status(200).end()
     } catch (err) {
       next(err)
@@ -62,4 +65,6 @@ class PostController {
   }
 }
 
-export const postController = new PostController(new PostService(FactoryRepos.getPostRepository()))
+export const postController = new PostController(
+  new PostService(FactoryRepos.getPostRepository(), new StorageRepositoryImpl()),
+)

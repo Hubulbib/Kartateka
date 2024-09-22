@@ -49,6 +49,7 @@ model organizations {
   organization_id Int               @id @default(autoincrement())
   name            String            @unique(map: "organizations_name_unique") @db.VarChar(255)
   type            organizationtype
+  avatar          String
   address         String            @db.VarChar(255)
   user_id         String
   users           users             @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "organizations_user_id_foreign")

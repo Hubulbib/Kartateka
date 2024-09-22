@@ -4,6 +4,7 @@ import { PostEntity } from './post.entity'
 export class OrganizationEntity {
   constructor(
     readonly organizationId: number,
+    readonly avatar: string,
     readonly name: string,
     readonly type: EOrganizationType,
     readonly address: string,

@@ -7,6 +7,7 @@ export class OrganizationMapper {
   static toDomain(entity: organizations, tools: ToolEntity[], posts: PostEntity[]): OrganizationEntity {
     return new OrganizationEntity(
       entity.organization_id,
+      entity.avatar,
       entity.name,
       EOrganizationType[entity.type],
       entity.address,

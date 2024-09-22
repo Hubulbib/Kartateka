@@ -1,9 +1,9 @@
 import { Response, NextFunction, Request } from 'express'
-import { prisma } from '../db'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
 import { OrganizationService } from '../../core/services/organization.service'
-import { OrganizationRepositoryImpl } from '../db/repositories/organization.repository.impl'
 import { FactoryRepos } from '../db/repositories'
+import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
+import { UploadedFile } from 'express-fileupload'
 
 class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
@@ -23,7 +23,8 @@ class OrganizationController {
         user: { uuid },
       } = req.auth
       const createBody = req.body
-      const organizationData = await this.organizationService.createOne(uuid, createBody)
+      const { avatar } = req.files
+      const organizationData = await this.organizationService.createOne(uuid, createBody, avatar as UploadedFile)
       res.status(201).json({ data: { ...organizationData } })
     } catch (err) {
       next(err)
@@ -63,7 +64,8 @@ class OrganizationController {
       } = req.auth
       const { id } = req.params
       const editBody = req.body
-      await this.organizationService.editOne(uuid, +id, editBody)
+      const { avatar } = req.files
+      await this.organizationService.editOne(uuid, +id, editBody, avatar as UploadedFile)
       res.status(200).end()
     } catch (err) {
       next(err)
@@ -85,5 +87,5 @@ class OrganizationController {
 }
 
 export const organizationController = new OrganizationController(
-  new OrganizationService(FactoryRepos.getOrganizationRepository()),
+  new OrganizationService(FactoryRepos.getOrganizationRepository(), new StorageRepositoryImpl()),
 )

@@ -25,7 +25,7 @@ router.post(
 )
 
 router.delete(
-  '/:orgId/favorite/:id',
+  '/:id/favorite/',
   [AuthMiddleware],
   async (req: IAuthRequest, res: Response, next: NextFunction) =>
     await organizationController.setNotFavorite(req, res, next),

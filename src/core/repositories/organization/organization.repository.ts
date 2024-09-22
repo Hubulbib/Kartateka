@@ -9,6 +9,6 @@ export interface OrganizationRepository {
   editOne: (organizationId: number, editBody: EditBodyDto) => Promise<void>
   removeOne: (organizationId: number) => Promise<void>
   setFavorite: (userId: string, organizationId: number) => Promise<void>
-  setNotFavorite: (userId: string, favoriteId: number, organizationId: number) => Promise<void>
+  setNotFavorite: (userId: string, organizationId: number) => Promise<void>
   checkAccess: (userId: string, organizationId: number) => Promise<void>
 }

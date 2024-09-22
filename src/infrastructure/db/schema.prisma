@@ -33,7 +33,7 @@ model favorites {
   users             users         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__user_id_foreign")
   organizations     organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__organization_id_foreign")
 
-  @@id([favorite_id, user_id, organization_id])
+  @@id([user_id, organization_id])
 }
 
 model media {

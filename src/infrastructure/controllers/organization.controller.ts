@@ -49,8 +49,8 @@ class OrganizationController {
       const {
         user: { uuid },
       } = req.auth
-      const { id, orgId } = req.params
-      await this.organizationService.setNotFavorite(uuid, +id, +orgId)
+      const { id } = req.params
+      await this.organizationService.setNotFavorite(uuid, +id)
       res.status(200).end()
     } catch (err) {
       next(err)

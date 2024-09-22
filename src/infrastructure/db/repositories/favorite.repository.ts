@@ -11,11 +11,10 @@ export class FavoriteRepository {
     return this.favoriteRepository.create({ data: { user_id: userId, organization_id: organizationId } })
   }
 
-  async removeOne(userId: string, favoriteId: number, organizationId: number): Promise<void> {
+  async removeOne(userId: string, organizationId: number): Promise<void> {
     await this.favoriteRepository.delete({
       where: {
-        favorite_id_user_id_organization_id: {
-          favorite_id: favoriteId,
+        user_id_organization_id: {
           user_id: userId,
           organization_id: organizationId,
         },

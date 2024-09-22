@@ -29,8 +29,8 @@ export class OrganizationService {
     return await this.organizationRepository.setFavorite(userId, organizationId)
   }
 
-  setNotFavorite = async (userId: string, favoriteId: number, organizationId: number): Promise<void> => {
-    return await this.organizationRepository.setNotFavorite(userId, favoriteId, organizationId)
+  setNotFavorite = async (userId: string, organizationId: number): Promise<void> => {
+    return await this.organizationRepository.setNotFavorite(userId, organizationId)
   }
 
   editOne = async (

@@ -67,8 +67,8 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     await FactoryRepos.getFavoriteRepository().createOne(userId, organizationId)
   }
 
-  async setNotFavorite(userId: string, favoriteId: number, organizationId: number): Promise<void> {
-    await FactoryRepos.getFavoriteRepository().removeOne(userId, favoriteId, organizationId)
+  async setNotFavorite(userId: string, organizationId: number): Promise<void> {
+    await FactoryRepos.getFavoriteRepository().removeOne(userId, organizationId)
   }
 
   private async convertToFullEntity(organization: organizations): Promise<OrganizationEntity> {

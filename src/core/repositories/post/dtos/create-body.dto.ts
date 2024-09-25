@@ -2,9 +2,9 @@ import { CreateBodyDto as MediaCreateBodyDto } from '../../../repositories/media
 
 export class CreateBodyDto {
   constructor(
-    readonly title: string,
+    readonly media: MediaCreateBodyDto[],
+    readonly title?: string,
     readonly text?: string,
     readonly tags?: string[],
-    readonly media?: MediaCreateBodyDto[],
   ) {}
 }

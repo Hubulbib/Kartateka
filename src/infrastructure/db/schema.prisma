@@ -40,6 +40,7 @@ model media {
   media_id   Int        @id @default(autoincrement())
   url        String     @unique(map: "media_url_unique") @db.VarChar(10000)
   type       mediatype?
+  number     Int
   created_at DateTime   @db.Timestamptz(0) @default(now())
   post_id    Int
   posts      posts      @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "media_post_id_foreign")
@@ -61,8 +62,8 @@ model organizations {
 model posts {
   post_id         Int           @id @default(autoincrement())
   organization_id Int
-  title           String        @db.VarChar(255)
-  text            String?
+  title           String?       @db.VarChar(255)   @default("")
+  text            String?                          @default("")
   created_at      DateTime      @db.Timestamptz(0) @default(now())
   updated_at      DateTime      @db.Timestamptz(0) @default(now())
   media           media[]

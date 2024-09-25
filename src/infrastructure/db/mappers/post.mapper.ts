@@ -7,13 +7,13 @@ export class PostMapper {
     return new PostEntity(
       entity.post_id,
       entity.organization_id,
-      entity.title,
-      entity.text,
       views,
       entity.created_at,
       entity.updated_at,
-      tags,
       media,
+      entity.title,
+      entity.text,
+      tags,
     )
   }
 }

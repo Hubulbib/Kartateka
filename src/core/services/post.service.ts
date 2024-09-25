@@ -22,10 +22,10 @@ export class PostService {
     files?: UploadedFile[],
   ): Promise<PostEntity> => {
     const filesUrl: [string, string][] = await this.uploadFiles(Object.values(files))
-
+    let i = 1 // number of media
     return await this.postRepository.createOne(organizationId, {
       ...createBody,
-      media: filesUrl.map((el: [string, string]) => ({ url: el[0], type: el[1] })),
+      media: filesUrl.map((el: [string, string]) => ({ url: el[0], type: el[1], number: i++ })),
     })
   }
 
@@ -36,9 +36,10 @@ export class PostService {
   editOne = async (userId: string, postId: number, editBody: EditBodyDto, files?: UploadedFile[]): Promise<void> => {
     await this.postRepository.checkAccess(userId, postId)
     const filesUrl: [string, string][] = await this.uploadFiles(Object.values(files))
+    let i = 1 // number of media
     await this.postRepository.editOne(postId, {
       ...editBody,
-      media: filesUrl.map((el: [string, string]) => ({ url: el[0], type: el[1] })),
+      media: filesUrl.map((el: [string, string]) => ({ url: el[0], type: el[1], number: i++ })),
     })
   }
 

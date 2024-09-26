@@ -5,6 +5,9 @@ import { CreateBodyDto } from '../repositories/organization/dtos/create-body.dto
 import { UploadedFile } from 'express-fileupload'
 import { StorageService } from './storage.service'
 import { StorageRepository } from '../repositories/storage/storage.repository'
+import { UserService } from './user.service'
+import { FactoryRepos } from '../../infrastructure/db/repositories'
+import { ApiError } from '../../infrastructure/exceptions/api.exception'
 
 export class OrganizationService {
   constructor(
@@ -21,6 +24,9 @@ export class OrganizationService {
     createBody: Omit<CreateBodyDto, 'avatar'>,
     file: UploadedFile,
   ): Promise<OrganizationEntity> => {
+    if (!(await this.checkAccess(userId))) {
+      throw ApiError.NotAccess()
+    }
     const [avatar] = await new StorageService(this.storageRepository).uploadFile(file)
     return await this.organizationRepository.createOne(userId, { ...createBody, avatar })
   }
@@ -39,13 +45,29 @@ export class OrganizationService {
     editBody: Omit<EditBodyDto, 'avatar'>,
     file: UploadedFile,
   ): Promise<void> => {
+    if (!(await this.checkAccess(userId))) {
+      throw ApiError.NotAccess()
+    }
+    /*
+    Checking if user can delete it himself
     await this.organizationRepository.checkAccess(userId, organizationId)
+    */
     const [avatar] = await new StorageService(this.storageRepository).uploadFile(file)
     await this.organizationRepository.editOne(organizationId, { ...editBody, avatar })
   }
 
   removeOne = async (userId: string, organizationId: number): Promise<void> => {
+    if (!(await this.checkAccess(userId))) {
+      throw ApiError.NotAccess()
+    }
+    /*
+    Checking if user can delete it himself
     await this.organizationRepository.checkAccess(userId, organizationId)
+    */
     await this.organizationRepository.removeOne(organizationId)
+  }
+
+  private checkAccess = async (userId: string): Promise<boolean> => {
+    return ['admin'].includes(await new UserService(FactoryRepos.getUserRepository()).getType(userId))
   }
 }

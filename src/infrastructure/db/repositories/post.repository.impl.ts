@@ -87,6 +87,7 @@ export class PostRepositoryImpl implements PostRepository {
       .findFirst({ where: { post_id: postId } })
       .organizations()
       .users()
+
     if (user.user_id !== userId) {
       throw ApiError.NotAccess('Это не ваша запись')
     }

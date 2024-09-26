@@ -22,7 +22,13 @@ class PostController {
       const { id } = req.params
       const createBody = req.body
       const { media } = req.files
-      const postData = await this.postService.createOne(+id, createBody, Array.isArray(media) ? [...media] : [media])
+      const { uuid } = req.auth.user
+      const postData = await this.postService.createOne(
+        uuid,
+        +id,
+        createBody,
+        Array.isArray(media) ? [...media] : [media],
+      )
       res.status(201).json({ data: { ...postData } })
     } catch (err) {
       next(err)

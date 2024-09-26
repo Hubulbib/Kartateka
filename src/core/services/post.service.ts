@@ -5,6 +5,9 @@ import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto'
 import { PostEntity } from '../entities/post.entity'
 import { StorageService } from './storage.service'
 import { StorageRepository } from '../repositories/storage/storage.repository'
+import { UserService } from './user.service'
+import { FactoryRepos } from '../../infrastructure/db/repositories'
+import { ApiError } from '../../infrastructure/exceptions/api.exception'
 
 export class PostService {
   constructor(
@@ -17,10 +20,14 @@ export class PostService {
   }
 
   createOne = async (
+    userId: string,
     organizationId: number,
     createBody: CreateBodyDto,
     files?: UploadedFile[],
   ): Promise<PostEntity> => {
+    if (!(await this.checkAccess(userId))) {
+      throw ApiError.NotAccess()
+    }
     const filesUrl: [string, string][] = await this.uploadFiles(Object.values(files))
     let i = 1 // number of media
     return await this.postRepository.createOne(organizationId, {
@@ -34,6 +41,9 @@ export class PostService {
   }
 
   editOne = async (userId: string, postId: number, editBody: EditBodyDto, files?: UploadedFile[]): Promise<void> => {
+    if (!(await this.checkAccess(userId))) {
+      throw ApiError.NotAccess()
+    }
     await this.postRepository.checkAccess(userId, postId)
     const filesUrl: [string, string][] = await this.uploadFiles(Object.values(files))
     let i = 1 // number of media
@@ -44,6 +54,9 @@ export class PostService {
   }
 
   removeOne = async (userId: string, postId: number): Promise<void> => {
+    if (!(await this.checkAccess(userId))) {
+      throw ApiError.NotAccess()
+    }
     await this.postRepository.checkAccess(userId, postId)
     await this.postRepository.removeOne(postId)
   }
@@ -55,5 +68,9 @@ export class PostService {
           await new StorageService(this.storageRepository).uploadFile(el),
       ),
     )
+  }
+
+  private checkAccess = async (userId: string): Promise<boolean> => {
+    return ['business', 'admin'].includes(await new UserService(FactoryRepos.getUserRepository()).getType(userId))
   }
 }

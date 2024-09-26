@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import { organizationController } from '../controllers/organization.controller'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { AuthMiddleware } from '../middlewares/authMiddleware/auth.middleware'
+import { AuthMiddleware } from '../middlewares/auth/auth.middleware'
+import { RoleMiddleware } from '../middlewares/role/role.middleware'
 
 const router = Router()
 
@@ -12,34 +13,34 @@ router.get(
 
 router.post(
   '/',
-  [AuthMiddleware],
+  [AuthMiddleware, RoleMiddleware.isAdminOrHead],
   async (req: IAuthRequest, res: Response, next: NextFunction) =>
     await organizationController.createOne(req, res, next),
 )
 
 router.post(
   '/:id/favorite',
-  [AuthMiddleware],
+  [AuthMiddleware, RoleMiddleware.isUser],
   async (req: IAuthRequest, res: Response, next: NextFunction) =>
     await organizationController.setFavorite(req, res, next),
 )
 
 router.delete(
   '/:id/favorite/',
-  [AuthMiddleware],
+  [AuthMiddleware, RoleMiddleware.isUser],
   async (req: IAuthRequest, res: Response, next: NextFunction) =>
     await organizationController.setNotFavorite(req, res, next),
 )
 
 router.patch(
   '/:id',
-  [AuthMiddleware],
+  [AuthMiddleware, RoleMiddleware.isAdminOrHead],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await organizationController.editOne(req, res, next),
 )
 
 router.delete(
   '/:id',
-  [AuthMiddleware],
+  [AuthMiddleware, RoleMiddleware.isAdminOrHead],
   async (req: IAuthRequest, res: Response, next: NextFunction) =>
     await organizationController.removeOne(req, res, next),
 )

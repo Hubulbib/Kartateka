@@ -112,4 +112,5 @@ enum organizationtype {
 enum usertype {
   basic
   business
+  admin
 }

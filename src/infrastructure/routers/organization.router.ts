@@ -3,6 +3,7 @@ import { organizationController } from '../controllers/organization.controller'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
 import { AuthMiddleware } from '../middlewares/auth/auth.middleware'
 import { RoleMiddleware } from '../middlewares/role/role.middleware'
+import { OrganizationValidator } from '../validators/organization.validator'
 
 const router = Router()
 
@@ -13,7 +14,7 @@ router.get(
 
 router.post(
   '/',
-  [AuthMiddleware, RoleMiddleware.isAdminOrHead],
+  [AuthMiddleware, RoleMiddleware.isAdminOrHead, OrganizationValidator.createOne],
   async (req: IAuthRequest, res: Response, next: NextFunction) =>
     await organizationController.createOne(req, res, next),
 )
@@ -34,7 +35,7 @@ router.delete(
 
 router.patch(
   '/:id',
-  [AuthMiddleware, RoleMiddleware.isAdminOrHead],
+  [AuthMiddleware, RoleMiddleware.isAdminOrHead, OrganizationValidator.editOne],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await organizationController.editOne(req, res, next),
 )
 

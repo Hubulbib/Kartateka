@@ -14,4 +14,5 @@ export class UserEntity {
 export enum EUserType {
   basic = 'basic',
   business = 'business',
+  admin = 'admin',
 }

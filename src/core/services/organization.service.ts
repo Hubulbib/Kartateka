@@ -4,15 +4,14 @@ import { EditBodyDto } from '../repositories/organization/dtos/edit-body.dto'
 import { CreateBodyDto } from '../repositories/organization/dtos/create-body.dto'
 import { UploadedFile } from 'express-fileupload'
 import { StorageService } from './storage.service'
-import { StorageRepository } from '../repositories/storage/storage.repository'
 import { UserService } from './user.service'
-import { FactoryRepos } from '../../infrastructure/db/repositories'
 import { ApiError } from '../../infrastructure/exceptions/api.exception'
 
 export class OrganizationService {
   constructor(
     private readonly organizationRepository: OrganizationRepository,
-    private readonly storageRepository: StorageRepository,
+    private readonly storageService: StorageService,
+    private readonly userService: UserService,
   ) {}
 
   getOneById = async (organizationId: number): Promise<OrganizationEntity> => {
@@ -27,7 +26,7 @@ export class OrganizationService {
     if (!(await this.checkAccess(userId))) {
       throw ApiError.NotAccess()
     }
-    const [avatar] = await new StorageService(this.storageRepository).uploadFile(file)
+    const [avatar] = await this.storageService.uploadFile(file)
     return await this.organizationRepository.createOne(userId, { ...createBody, avatar })
   }
 
@@ -52,7 +51,7 @@ export class OrganizationService {
     Checking if user can delete it himself
     await this.organizationRepository.checkAccess(userId, organizationId)
     */
-    const [avatar] = await new StorageService(this.storageRepository).uploadFile(file)
+    const [avatar] = await this.storageService.uploadFile(file)
     await this.organizationRepository.editOne(organizationId, { ...editBody, avatar })
   }
 
@@ -68,6 +67,6 @@ export class OrganizationService {
   }
 
   private checkAccess = async (userId: string): Promise<boolean> => {
-    return ['admin'].includes(await new UserService(FactoryRepos.getUserRepository()).getType(userId))
+    return ['admin'].includes(await this.userService.getType(userId))
   }
 }

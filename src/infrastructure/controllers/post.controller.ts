@@ -3,6 +3,9 @@ import { PostService } from '../../core/services/post.service'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
 import { FactoryRepos } from '../db/repositories'
 import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
+import { StorageService } from '../../core/services/storage.service'
+import { storage } from '../storage'
+import { UserService } from '../../core/services/user.service'
 
 class PostController {
   constructor(private readonly postService: PostService) {}
@@ -72,5 +75,9 @@ class PostController {
 }
 
 export const postController = new PostController(
-  new PostService(FactoryRepos.getPostRepository(), new StorageRepositoryImpl()),
+  new PostService(
+    FactoryRepos.getPostRepository(),
+    new StorageService(new StorageRepositoryImpl(storage)),
+    new UserService(FactoryRepos.getUserRepository()),
+  ),
 )

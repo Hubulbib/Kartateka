@@ -1,12 +1,15 @@
 import { UploadedFile } from 'express-fileupload'
 import { createReadStream, unlinkSync } from 'fs'
+import { S3 } from '@aws-sdk/client-s3'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { StorageRepository } from '../../../core/repositories/storage/storage.repository'
 import { genUuid } from '../../utils/generate.util'
-import { BUCKET_NAME, storage, STORAGE_BASE } from '../index'
+import { BUCKET_NAME, STORAGE_BASE } from '../index'
 
 export class StorageRepositoryImpl implements StorageRepository {
+  constructor(private readonly storageRepository: S3) {}
+
   async uploadFile(file: UploadedFile): Promise<string> {
     const [filePath, fileId] = this.getPathFile(file.name.split('.').pop())
     await file.mv(filePath)
@@ -19,7 +22,7 @@ export class StorageRepositoryImpl implements StorageRepository {
       ContentType: file.mimetype,
     }
 
-    await storage.putObject(params)
+    await this.storageRepository.putObject(params)
     unlinkSync(filePath)
     return this.getPathFileOnStorage(params.Bucket, params.Key)
   }

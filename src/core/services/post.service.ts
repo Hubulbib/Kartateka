@@ -4,15 +4,14 @@ import { EditBodyDto } from '../repositories/post/dtos/edit-body.dto'
 import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto'
 import { PostEntity } from '../entities/post.entity'
 import { StorageService } from './storage.service'
-import { StorageRepository } from '../repositories/storage/storage.repository'
 import { UserService } from './user.service'
-import { FactoryRepos } from '../../infrastructure/db/repositories'
 import { ApiError } from '../../infrastructure/exceptions/api.exception'
 
 export class PostService {
   constructor(
     private readonly postRepository: PostRepository,
-    private readonly storageRepository: StorageRepository,
+    private readonly storageService: StorageService,
+    private readonly userService: UserService,
   ) {}
 
   getOneById = async (postId: number): Promise<PostEntity> => {
@@ -63,14 +62,11 @@ export class PostService {
 
   private uploadFiles = async (files: UploadedFile[]): Promise<[string, string][]> => {
     return await Promise.all(
-      files.map(
-        async (el: UploadedFile): Promise<[string, string]> =>
-          await new StorageService(this.storageRepository).uploadFile(el),
-      ),
+      files.map(async (el: UploadedFile): Promise<[string, string]> => await this.storageService.uploadFile(el)),
     )
   }
 
   private checkAccess = async (userId: string): Promise<boolean> => {
-    return ['business', 'admin'].includes(await new UserService(FactoryRepos.getUserRepository()).getType(userId))
+    return ['business', 'admin'].includes(await this.userService.getType(userId))
   }
 }

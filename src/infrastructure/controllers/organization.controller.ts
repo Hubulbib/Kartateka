@@ -1,9 +1,12 @@
 import { Response, NextFunction, Request } from 'express'
+import { UploadedFile } from 'express-fileupload'
+import { FactoryRepos } from '../db/repositories'
 import { IAuthRequest } from '../interfaces/auth.request.interface'
 import { OrganizationService } from '../../core/services/organization.service'
-import { FactoryRepos } from '../db/repositories'
 import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
-import { UploadedFile } from 'express-fileupload'
+import { StorageService } from '../../core/services/storage.service'
+import { storage } from '../storage'
+import { UserService } from '../../core/services/user.service'
 
 class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
@@ -87,5 +90,9 @@ class OrganizationController {
 }
 
 export const organizationController = new OrganizationController(
-  new OrganizationService(FactoryRepos.getOrganizationRepository(), new StorageRepositoryImpl()),
+  new OrganizationService(
+    FactoryRepos.getOrganizationRepository(),
+    new StorageService(new StorageRepositoryImpl(storage)),
+    new UserService(FactoryRepos.getUserRepository()),
+  ),
 )

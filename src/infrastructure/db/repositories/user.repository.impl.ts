@@ -29,6 +29,9 @@ export class UserRepositoryImpl implements UserRepository {
 
   async getFavoriteList(userId: string): Promise<OrganizationEntity[]> {
     const favorites = await FactoryRepos.getFavoriteRepository().getAll(userId)
+    if (!favorites) {
+      return []
+    }
     return Promise.all(
       favorites.map(async (el) => await FactoryRepos.getOrganizationRepository().getOneById(el.organization_id)),
     )
@@ -36,6 +39,9 @@ export class UserRepositoryImpl implements UserRepository {
 
   async getViewedList(userId: string): Promise<PostEntity[]> {
     const views = await FactoryRepos.getViewRepository().getByUser(userId)
+    if (!views) {
+      return []
+    }
     return Promise.all(views.map(async (el) => await FactoryRepos.getPostRepository().getOneById(el.post_id)))
   }
 

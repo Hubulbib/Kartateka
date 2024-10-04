@@ -18,6 +18,14 @@ export class PostService {
     return await this.postRepository.getOneById(postId)
   }
 
+  getRecommended = async (userId: string, limit: number): Promise<Pick<PostEntity, 'postId' | 'media'>[]> => {
+    const user = await this.userService.getOneById(userId)
+    return await this.postRepository.getRecommended(
+      user.views.map((el) => el.postId),
+      limit | 10,
+    )
+  }
+
   createOne = async (
     userId: string,
     organizationId: number,

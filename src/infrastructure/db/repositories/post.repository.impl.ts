@@ -30,6 +30,23 @@ export class PostRepositoryImpl implements PostRepository {
     return await this.convertToFullEntity(post)
   }
 
+  async getRecommended(viewed: number[], limit: number): Promise<Pick<PostEntity, 'postId' | 'media'>[]> {
+    const allPosts = await this.postRepository.findMany({ select: { post_id: true } })
+
+    // Ранжируем посты
+    const rankedPosts = allPosts.map((post) => this.rankingPost(post.post_id, viewed))
+
+    // Сортируем посты по убыванию оценки
+    rankedPosts.sort((a, b) => b.score - a.score)
+
+    return await Promise.all(
+      rankedPosts.slice(0, limit).map(async (el) => ({
+        postId: el.postId,
+        media: await FactoryRepos.getMediaRepository().getAll(el.postId),
+      })),
+    )
+  }
+
   async createOne(organizationId: number, createBody: CreateBodyDto): Promise<PostEntity> {
     const { media, tags, ...postCreateBody } = createBody
     // creating post
@@ -80,6 +97,17 @@ export class PostRepositoryImpl implements PostRepository {
       post.posts_tags.map((el) => el.tags.name),
       await FactoryRepos.getMediaRepository().getAll(post.post_id),
     )
+  }
+
+  private rankingPost(postId: number, viewed: number[]) {
+    let score = 0
+
+    // Увеличиваем оценку, если пост был просмотрен пользователем
+    if (viewed.includes(postId)) {
+      score += 5 // Вес для просмотренных постов
+    }
+
+    return { postId, score } // Возвращаем пост с его оценкой
   }
 
   async checkAccess(userId: string, postId: number): Promise<void> {

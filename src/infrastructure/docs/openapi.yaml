@@ -285,6 +285,32 @@ paths:
         '404':
           description: Организация не найдена
 
+  /posts/recommended:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - post
+      summary: Получение рекомендованных пользователю постов
+      operationId: get-post-by-id
+      parameters:
+        - name: limit
+          description: Количество постов
+          in: query
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
+
   /posts/{id}:
     get:
       tags:

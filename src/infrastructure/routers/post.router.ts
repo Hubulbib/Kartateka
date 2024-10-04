@@ -8,6 +8,12 @@ import { PostValidator } from '../validators/post.validator'
 const router = Router()
 
 router.get(
+  '/recommended',
+  [AuthMiddleware],
+  async (req: IAuthRequest, res: Response, next: NextFunction) => await postController.getRecommended(req, res, next),
+)
+
+router.get(
   '/:id',
   async (req: Request, res: Response, next: NextFunction) => await postController.getOneById(req, res, next),
 )

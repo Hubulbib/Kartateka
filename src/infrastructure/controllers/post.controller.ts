@@ -20,6 +20,17 @@ class PostController {
     }
   }
 
+  async getRecommended(req: IAuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { uuid } = req.auth.user
+      const { limit } = req.query
+      const postData = await this.postService.getRecommended(uuid, +limit)
+      res.status(201).json({ data: { ...postData } })
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async createOne(req: IAuthRequest, res: Response, next: NextFunction) {
     try {
       const { id } = req.params

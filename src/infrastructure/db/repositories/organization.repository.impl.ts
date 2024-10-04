@@ -12,11 +12,11 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
   constructor(private readonly organizationRepository: Prisma.organizationsDelegate) {}
 
   async getAll(userId: string): Promise<OrganizationEntity[]> {
-    return Promise.all(
-      (await this.organizationRepository.findMany({ where: { user_id: userId } })).map(
-        async (el) => await this.convertToFullEntity(el),
-      ),
-    )
+    const organizations = await this.organizationRepository.findMany({ where: { user_id: userId } })
+    if (!organizations) {
+      return []
+    }
+    return Promise.all(organizations.map(async (el) => await this.convertToFullEntity(el)))
   }
 
   async getOneById(organizationId: number): Promise<OrganizationEntity> {

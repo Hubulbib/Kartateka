@@ -1,5 +1,5 @@
 import { UserRepository } from '../repositories/user/user.repository'
-import { EUserType, UserEntity } from '../entities/user.entity'
+import { EUserType, UserEntity, UserEntityShort } from '../entities/user.entity'
 import { OrganizationEntity } from '../entities/organization.entity'
 import { PostEntity } from '../entities/post.entity'
 import { RegisterBodyDto } from '../repositories/user/dtos/register-body.dto'
@@ -7,6 +7,7 @@ import { ViewRepository } from '../repositories/view/view.repository'
 import { FavoriteRepository } from '../repositories/favorite/favorite.repository'
 import { OrganizationRepository } from '../repositories/organization/organization.repository'
 import { PostRepository } from '../repositories/post/post.repository'
+import { CacheRepository } from '../repositories/cache/cache.repository'
 
 export class UserService {
   constructor(
@@ -15,6 +16,7 @@ export class UserService {
     readonly favoriteRepository: FavoriteRepository,
     readonly organizationRepository: OrganizationRepository,
     readonly postRepository: PostRepository,
+    readonly cacheRepository: CacheRepository,
   ) {}
 
   register = async (registerBody: RegisterBodyDto): Promise<UserEntity> => {
@@ -31,7 +33,12 @@ export class UserService {
   }*/
 
   getOneById = async (userId: string): Promise<UserEntity> => {
-    const user = await this.userRepository.getOneById(userId)
+    const cacheKey = this.cacheRepository.createKeyName('user', userId)
+    let user = await this.cacheRepository.get<UserEntityShort>(cacheKey)
+    if (!user) {
+      user = await this.userRepository.getOneById(userId)
+      await this.cacheRepository.set(cacheKey, user, 1200)
+    }
     return {
       ...user,
       ...(await this.getFullUser(user.userId)),

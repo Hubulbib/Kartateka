@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client'
 import { UserRepositoryImpl } from './user.repository.impl'
 import { OrganizationRepositoryImpl } from './organization.repository.impl'
 import { ToolRepositoryImpl } from './tool.repository.impl'
-import { FavoriteRepository } from './favorite.repository'
+import { FavoriteRepositoryImpl } from './favorite.repository.impl'
 import { PostRepositoryImpl } from './post.repository.impl'
 import { MediaRepositoryImpl } from './media.repository.impl'
 import { UserRepository } from '../../../core/repositories/user/user.repository'
@@ -12,7 +12,7 @@ import { PostRepository } from '../../../core/repositories/post/post.repository'
 import { MediaRepository } from '../../../core/repositories/media/media.repository'
 import { TagRepository } from './tag.repository'
 import { PostTagRepository } from './post-tag.repository'
-import { ViewRepository } from './view.repository'
+import { ViewRepositoryImpl } from './view.repository.impl'
 
 export class RepositoryFactory {
   constructor(
@@ -39,8 +39,8 @@ export class RepositoryFactory {
     return new ToolRepositoryImpl(this.toolRepository)
   }
 
-  getFavoriteRepository(): FavoriteRepository {
-    return new FavoriteRepository(this.favoriteRepository)
+  getFavoriteRepository(): FavoriteRepositoryImpl {
+    return new FavoriteRepositoryImpl(this.favoriteRepository)
   }
 
   getPostRepository(): PostRepository {
@@ -59,7 +59,7 @@ export class RepositoryFactory {
     return new PostTagRepository(this.postsTagsRepository)
   }
 
-  getViewRepository(): ViewRepository {
-    return new ViewRepository(this.viewRepository)
+  getViewRepository(): ViewRepositoryImpl {
+    return new ViewRepositoryImpl(this.viewRepository)
   }
 }

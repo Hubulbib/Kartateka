@@ -4,14 +4,16 @@ import { EditBodyDto } from '../repositories/post/dtos/edit-body.dto'
 import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto'
 import { PostEntity } from '../entities/post.entity'
 import { StorageService } from './storage.service'
-import { UserService } from './user.service'
 import { ApiError } from '../../infrastructure/exceptions/api.exception'
+import { UserRepository } from '../repositories/user/user.repository'
+import { ViewRepository } from '../repositories/view/view.repository'
 
 export class PostService {
   constructor(
     private readonly postRepository: PostRepository,
+    private readonly userRepository: UserRepository,
+    private readonly viewRepository: ViewRepository,
     private readonly storageService: StorageService,
-    private readonly userService: UserService,
   ) {}
 
   getOneById = async (postId: number): Promise<PostEntity> => {
@@ -19,9 +21,10 @@ export class PostService {
   }
 
   getRecommended = async (userId: string, limit: number): Promise<Pick<PostEntity, 'postId' | 'media'>[]> => {
-    const user = await this.userService.getOneById(userId)
+    const user = await this.userRepository.getOneById(userId)
+    const views = await this.viewRepository.getByUser(user.userId)
     return await this.postRepository.getRecommended(
-      user.views.map((el) => el.postId),
+      views.map((el) => el.postId),
       limit | 10,
     )
   }
@@ -75,6 +78,6 @@ export class PostService {
   }
 
   private checkAccess = async (userId: string): Promise<boolean> => {
-    return ['business', 'admin'].includes(await this.userService.getType(userId))
+    return ['business', 'admin'].includes(await this.userRepository.getType(userId))
   }
 }

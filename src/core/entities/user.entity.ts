@@ -11,6 +11,8 @@ export class UserEntity {
   ) {}
 }
 
+export type UserEntityShort = Pick<UserEntity, 'userId' | 'type'>
+
 export enum EUserType {
   basic = 'basic',
   business = 'business',

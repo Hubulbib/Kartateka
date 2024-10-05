@@ -6,7 +6,6 @@ import { OrganizationService } from '../../core/services/organization.service'
 import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
 import { StorageService } from '../../core/services/storage.service'
 import { storage } from '../storage'
-import { UserService } from '../../core/services/user.service'
 
 class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
@@ -92,7 +91,7 @@ class OrganizationController {
 export const organizationController = new OrganizationController(
   new OrganizationService(
     FactoryRepos.getOrganizationRepository(),
+    FactoryRepos.getUserRepository(),
     new StorageService(new StorageRepositoryImpl(storage)),
-    new UserService(FactoryRepos.getUserRepository()),
   ),
 )

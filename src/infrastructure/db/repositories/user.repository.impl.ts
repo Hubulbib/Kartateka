@@ -1,6 +1,6 @@
-import { Prisma, users } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { PostEntity } from '../../../core/entities/post.entity'
-import { UserEntity } from '../../../core/entities/user.entity'
+import { type UserEntityShort } from '../../../core/entities/user.entity'
 import { OrganizationEntity } from '../../../core/entities/organization.entity'
 import { UserRepository } from '../../../core/repositories/user/user.repository'
 import { RegisterBodyDto } from '../../../core/repositories/user/dtos/register-body.dto'
@@ -10,21 +10,21 @@ import { ApiError } from '../../exceptions/api.exception'
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly userRepository: Prisma.usersDelegate) {}
-  async register(registerBody: RegisterBodyDto): Promise<UserEntity> {
+  async register(registerBody: RegisterBodyDto): Promise<UserEntityShort> {
     const { userId, ...body } = registerBody
-    return await this.convertToFullEntity(await this.userRepository.create({ data: { ...body, user_id: userId } }))
+    return UserMapper.toDomain(await this.userRepository.create({ data: { ...body, user_id: userId } }))
   }
 
   /*async getSubscribe(userId: string): Promise<void> {
     await this.userRepository.update({ where: { user_id: userId }, data: { type: 'business' } })
   }*/
 
-  async getOneById(userId: string): Promise<UserEntity> {
+  async getOneById(userId: string): Promise<UserEntityShort> {
     const user = await this.userRepository.findFirst({ where: { user_id: userId } })
     if (!user) {
       throw ApiError.NotFound('Пользователь отсутствует')
     }
-    return await this.convertToFullEntity(user)
+    return UserMapper.toDomain(user)
   }
 
   async getFavoriteList(userId: string): Promise<OrganizationEntity[]> {
@@ -33,7 +33,7 @@ export class UserRepositoryImpl implements UserRepository {
       return []
     }
     return Promise.all(
-      favorites.map(async (el) => await FactoryRepos.getOrganizationRepository().getOneById(el.organization_id)),
+      favorites.map(async (el) => await FactoryRepos.getOrganizationRepository().getOneById(el.organizationId)),
     )
   }
 
@@ -42,7 +42,7 @@ export class UserRepositoryImpl implements UserRepository {
     if (!views) {
       return []
     }
-    return Promise.all(views.map(async (el) => await FactoryRepos.getPostRepository().getOneById(el.post_id)))
+    return Promise.all(views.map(async (el) => await FactoryRepos.getPostRepository().getOneById(el.postId)))
   }
 
   async getType(userId: string): Promise<string> {
@@ -51,14 +51,5 @@ export class UserRepositoryImpl implements UserRepository {
       throw ApiError.NotFound('Пользователь отсутствует')
     }
     return user.type
-  }
-
-  private async convertToFullEntity(user: users): Promise<UserEntity> {
-    return UserMapper.toDomain(
-      user,
-      await FactoryRepos.getOrganizationRepository().getAll(user.user_id),
-      await this.getViewedList(user.user_id),
-      await this.getFavoriteList(user.user_id),
-    )
   }
 }

@@ -4,14 +4,14 @@ import { EditBodyDto } from '../repositories/organization/dtos/edit-body.dto'
 import { CreateBodyDto } from '../repositories/organization/dtos/create-body.dto'
 import { UploadedFile } from 'express-fileupload'
 import { StorageService } from './storage.service'
-import { UserService } from './user.service'
 import { ApiError } from '../../infrastructure/exceptions/api.exception'
+import { UserRepository } from '../repositories/user/user.repository'
 
 export class OrganizationService {
   constructor(
     private readonly organizationRepository: OrganizationRepository,
+    private readonly userRepository: UserRepository,
     private readonly storageService: StorageService,
-    private readonly userService: UserService,
   ) {}
 
   getOneById = async (organizationId: number): Promise<OrganizationEntity> => {
@@ -67,6 +67,6 @@ export class OrganizationService {
   }
 
   private checkAccess = async (userId: string): Promise<boolean> => {
-    return ['admin'].includes(await this.userService.getType(userId))
+    return ['admin'].includes(await this.userRepository.getType(userId))
   }
 }

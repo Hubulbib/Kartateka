@@ -78,4 +78,12 @@ class UserController {
   }
 }
 
-export const userController = new UserController(new UserService(FactoryRepos.getUserRepository()))
+export const userController: UserController = new UserController(
+  new UserService(
+    FactoryRepos.getUserRepository(),
+    FactoryRepos.getViewRepository(),
+    FactoryRepos.getFavoriteRepository(),
+    FactoryRepos.getOrganizationRepository(),
+    FactoryRepos.getPostRepository(),
+  ),
+)

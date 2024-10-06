@@ -5,6 +5,8 @@ import { FactoryRepos } from '../db/repositories'
 import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
 import { StorageService } from '../../core/services/storage.service'
 import { storage } from '../storage'
+import { CacheRepositoryImpl } from '../cache/repositories/cache.repository.impl'
+import { cacheClient } from '../cache'
 
 class PostController {
   constructor(private readonly postService: PostService) {}
@@ -90,5 +92,6 @@ export const postController = new PostController(
     FactoryRepos.getUserRepository(),
     FactoryRepos.getViewRepository(),
     new StorageService(new StorageRepositoryImpl(storage)),
+    new CacheRepositoryImpl(cacheClient),
   ),
 )

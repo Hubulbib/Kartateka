@@ -37,7 +37,7 @@ export class UserService {
     let user = await this.cacheRepository.get<UserEntityShort>(cacheKey)
     if (!user) {
       user = await this.userRepository.getOneById(userId)
-      await this.cacheRepository.set(cacheKey, user, 1200)
+      await this.cacheRepository.set<UserEntityShort>(cacheKey, user, 1200)
     }
     return {
       ...user,

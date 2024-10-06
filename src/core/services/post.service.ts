@@ -7,6 +7,7 @@ import { StorageService } from './storage.service'
 import { ApiError } from '../../infrastructure/exceptions/api.exception'
 import { UserRepository } from '../repositories/user/user.repository'
 import { ViewRepository } from '../repositories/view/view.repository'
+import { CacheRepository } from '../repositories/cache/cache.repository'
 
 export class PostService {
   constructor(
@@ -14,6 +15,7 @@ export class PostService {
     private readonly userRepository: UserRepository,
     private readonly viewRepository: ViewRepository,
     private readonly storageService: StorageService,
+    private readonly cacheRepository: CacheRepository,
   ) {}
 
   getOneById = async (postId: number): Promise<PostEntity> => {
@@ -21,12 +23,19 @@ export class PostService {
   }
 
   getRecommended = async (userId: string, limit: number): Promise<Pick<PostEntity, 'postId' | 'media'>[]> => {
+    const cacheKey = this.cacheRepository.createKeyName('user', userId, 'post_recommended')
+    const cachePosts = await this.cacheRepository.get<Pick<PostEntity, 'postId' | 'media'>[]>(cacheKey)
+    if (cachePosts) {
+      return cachePosts
+    }
     const user = await this.userRepository.getOneById(userId)
     const views = await this.viewRepository.getByUser(user.userId)
-    return await this.postRepository.getRecommended(
+    const recommended = await this.postRepository.getRecommended(
       views.map((el) => el.postId),
       limit | 10,
     )
+    await this.cacheRepository.set<Pick<PostEntity, 'postId' | 'media'>[]>(cacheKey, recommended, 3600)
+    return recommended
   }
 
   createOne = async (

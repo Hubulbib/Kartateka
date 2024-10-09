@@ -13,3 +13,5 @@ export class PostEntity {
     readonly tags?: string[],
   ) {}
 }
+
+export type PostEntityShort = Pick<PostEntity, 'postId' | 'media'>

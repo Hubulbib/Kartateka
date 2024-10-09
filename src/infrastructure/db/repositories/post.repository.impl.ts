@@ -1,6 +1,6 @@
 import { posts, Prisma } from '@prisma/client'
 import { PostRepository } from '../../../core/repositories/post/post.repository'
-import { PostEntity } from '../../../core/entities/post.entity'
+import { PostEntity, type PostEntityShort } from '../../../core/entities/post.entity'
 import { CreateBodyDto } from '../../../core/repositories/post/dtos/create-body.dto'
 import { EditBodyDto } from '../../../core/repositories/post/dtos/edit-body.dto'
 import { PostMapper } from '../mappers/post.mapper'
@@ -30,7 +30,7 @@ export class PostRepositoryImpl implements PostRepository {
     return await this.convertToFullEntity(post)
   }
 
-  async getRecommended(viewed: number[], limit: number): Promise<Pick<PostEntity, 'postId' | 'media'>[]> {
+  async getRecommended(viewed: number[], limit: number): Promise<PostEntityShort[]> {
     const allPosts = await this.postRepository.findMany({ select: { post_id: true } })
 
     // Ранжируем посты
@@ -43,6 +43,37 @@ export class PostRepositoryImpl implements PostRepository {
       rankedPosts.slice(0, limit).map(async (el) => ({
         postId: el.postId,
         media: await FactoryRepos.getMediaRepository().getAll(el.postId),
+      })),
+    )
+  }
+
+  async searchByText(queryText: string): Promise<PostEntityShort[]> {
+    const result = await this.postRepository.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: queryText,
+            },
+          },
+          {
+            text: {
+              contains: queryText,
+            },
+          },
+        ],
+      },
+      take: 5,
+      orderBy: { views: { _count: 'desc' } },
+      select: {
+        post_id: true,
+      },
+    })
+
+    return await Promise.all(
+      result.map(async (el) => ({
+        postId: el.post_id,
+        media: await FactoryRepos.getMediaRepository().getAll(el.post_id),
       })),
     )
   }

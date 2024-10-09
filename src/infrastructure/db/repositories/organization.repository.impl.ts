@@ -1,5 +1,9 @@
 import { organizations, Prisma } from '@prisma/client'
-import { EOrganizationType, OrganizationEntity } from '../../../core/entities/organization.entity'
+import {
+  EOrganizationType,
+  OrganizationEntity,
+  type OrganizationEntitySearch,
+} from '../../../core/entities/organization.entity'
 import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-body.dto'
 import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto'
 import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository'
@@ -22,6 +26,23 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
   async getOneById(organizationId: number): Promise<OrganizationEntity> {
     const organization = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } })
     return await this.convertToFullEntity(organization)
+  }
+
+  async searchByText(queryText: string): Promise<OrganizationEntitySearch[]> {
+    const result = await this.organizationRepository.findMany({
+      where: {
+        name: {
+          contains: queryText,
+        },
+      },
+      take: 5,
+      orderBy: { name: 'asc' },
+    })
+
+    return result.map((el) => {
+      const { tools, posts, type, address, ...organization } = OrganizationMapper.toDomain(el, [], [])
+      return organization
+    })
   }
 
   async createOne(userId: string, createBody: CreateBodyDto): Promise<OrganizationEntity> {

@@ -13,7 +13,7 @@ export class OrganizationEntity {
   ) {}
 }
 
-export type OrganizationEntityShort = Omit<OrganizationEntity, 'tools' | 'posts'>
+export type OrganizationEntitySearch = Omit<OrganizationEntity, 'type' | 'address' | 'tools' | 'posts'>
 
 export enum EOrganizationType {
   coffee = 'coffee',

@@ -2,7 +2,7 @@ import { type UploadedFile } from 'express-fileupload'
 import { PostRepository } from '../repositories/post/post.repository'
 import { EditBodyDto } from '../repositories/post/dtos/edit-body.dto'
 import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto'
-import { PostEntity } from '../entities/post.entity'
+import { PostEntity, type PostEntityShort } from '../entities/post.entity'
 import { StorageService } from './storage.service'
 import { ApiError } from '../../infrastructure/exceptions/api.exception'
 import { UserRepository } from '../repositories/user/user.repository'
@@ -22,9 +22,9 @@ export class PostService {
     return await this.postRepository.getOneById(postId)
   }
 
-  getRecommended = async (userId: string, limit: number): Promise<Pick<PostEntity, 'postId' | 'media'>[]> => {
+  getRecommended = async (userId: string, limit: number): Promise<PostEntityShort[]> => {
     const cacheKey = this.cacheRepository.createKeyName('user', userId, 'post_recommended')
-    const cachePosts = await this.cacheRepository.get<Pick<PostEntity, 'postId' | 'media'>[]>(cacheKey)
+    const cachePosts = await this.cacheRepository.get<PostEntityShort[]>(cacheKey)
     if (cachePosts) {
       return cachePosts
     }
@@ -34,7 +34,7 @@ export class PostService {
       views.map((el) => el.postId),
       limit | 10,
     )
-    await this.cacheRepository.set<Pick<PostEntity, 'postId' | 'media'>[]>(cacheKey, recommended, 3600)
+    await this.cacheRepository.set<PostEntityShort[]>(cacheKey, recommended, 3600)
     return recommended
   }
 

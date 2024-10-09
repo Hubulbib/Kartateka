@@ -9,6 +9,8 @@ import { postRouter } from './infrastructure/routers/post.router'
 import { organizationRouter } from './infrastructure/routers/organization.router'
 import { docsPath } from './infrastructure/docs'
 import { cacheClient } from './infrastructure/cache'
+import { WS } from './infrastructure/ws'
+import * as http from 'http'
 
 const app = express()
 const PORT = process.env.PORT
@@ -28,11 +30,15 @@ app.use('/api/users', userRouter)
 app.use('/api/posts', postRouter)
 app.use('/api/organizations', organizationRouter)
 
-app
+const server = http.createServer(app)
+const ws = new WS(server)
+
+server
   .listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
   })
   .emit('close', async () => {
     await prisma.$disconnect()
     await cacheClient.disconnect()
+    ws.close()
   })

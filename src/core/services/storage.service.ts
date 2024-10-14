@@ -12,7 +12,7 @@ export class StorageService {
   private getType = (mimetype: string): EMediaType => {
     if (mimetype.includes('gif')) {
       return EMediaType.gif
-    } else if (mimetype.includes('image')) {
+    } else if (mimetype.includes('image?')) {
       return EMediaType.image
     } else if (mimetype.includes('video')) {
       return EMediaType.video

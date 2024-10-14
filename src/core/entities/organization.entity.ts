@@ -1,5 +1,6 @@
 import { ToolEntity } from './tool.entity'
 import { PostEntity } from './post.entity'
+import { ItemEntity } from './item.entity'
 
 export class OrganizationEntity {
   constructor(
@@ -10,10 +11,11 @@ export class OrganizationEntity {
     readonly address: string,
     readonly tools: ToolEntity[],
     readonly posts: PostEntity[],
+    readonly items: ItemEntity[],
   ) {}
 }
 
-export type OrganizationEntitySearch = Omit<OrganizationEntity, 'type' | 'address' | 'tools' | 'posts'>
+export type OrganizationEntitySearch = Omit<OrganizationEntity, 'type' | 'address' | 'tools' | 'posts' | 'items'>
 
 export enum EOrganizationType {
   coffee = 'coffee',

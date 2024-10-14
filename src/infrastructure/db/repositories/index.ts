@@ -11,4 +11,6 @@ export const FactoryRepos = new RepositoryFactory(
   prisma.tags,
   prisma.views,
   prisma.favorites,
+  prisma.items,
+  prisma.volumes,
 )

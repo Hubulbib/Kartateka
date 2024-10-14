@@ -13,6 +13,12 @@ import { MediaRepository } from '../../../core/repositories/media/media.reposito
 import { TagRepository } from './tag.repository'
 import { PostTagRepository } from './post-tag.repository'
 import { ViewRepositoryImpl } from './view.repository.impl'
+import { ItemRepositoryImpl } from './item.repository.impl'
+import { FavoriteRepository } from '../../../core/repositories/favorite/favorite.repository'
+import { ViewRepository } from '../../../core/repositories/view/view.repository'
+import { ItemRepository } from '../../../core/repositories/item/item.repository'
+import { VolumeRepository } from '../../../core/repositories/volume/volume.repository'
+import { VolumeRepositoryImpl } from './volume.repository.impl'
 
 export class RepositoryFactory {
   constructor(
@@ -25,6 +31,8 @@ export class RepositoryFactory {
     private readonly tagRepository: Prisma.tagsDelegate,
     private readonly viewRepository: Prisma.viewsDelegate,
     private readonly favoriteRepository: Prisma.favoritesDelegate,
+    private readonly itemRepository: Prisma.itemsDelegate,
+    private readonly volumeRepository: Prisma.volumesDelegate,
   ) {}
 
   getUserRepository(): UserRepository {
@@ -39,7 +47,7 @@ export class RepositoryFactory {
     return new ToolRepositoryImpl(this.toolRepository)
   }
 
-  getFavoriteRepository(): FavoriteRepositoryImpl {
+  getFavoriteRepository(): FavoriteRepository {
     return new FavoriteRepositoryImpl(this.favoriteRepository)
   }
 
@@ -59,7 +67,15 @@ export class RepositoryFactory {
     return new PostTagRepository(this.postsTagsRepository)
   }
 
-  getViewRepository(): ViewRepositoryImpl {
+  getViewRepository(): ViewRepository {
     return new ViewRepositoryImpl(this.viewRepository)
+  }
+
+  getItemRepository(): ItemRepository {
+    return new ItemRepositoryImpl(this.itemRepository)
+  }
+
+  getVolumeRepository(): VolumeRepository {
+    return new VolumeRepositoryImpl(this.volumeRepository)
   }
 }

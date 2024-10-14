@@ -7,10 +7,11 @@ import { prisma } from './infrastructure/db'
 import { userRouter } from './infrastructure/routers/user.router'
 import { postRouter } from './infrastructure/routers/post.router'
 import { organizationRouter } from './infrastructure/routers/organization.router'
+import { itemRouter } from './infrastructure/routers/item.router'
 import { docsPath } from './infrastructure/docs'
 import { cacheClient } from './infrastructure/cache'
 import { WS } from './infrastructure/ws'
-import * as http from 'http'
+import { createServer } from 'http'
 
 const app = express()
 const PORT = process.env.PORT
@@ -28,9 +29,10 @@ app.use('/api/docs', serve, setup(YAML.load(docsPath)))
 // API
 app.use('/api/users', userRouter)
 app.use('/api/posts', postRouter)
-app.use('/api/organizations', organizationRouter)
+app.use('/api/org', organizationRouter)
+app.use('/api/org-item', itemRouter)
 
-const server = http.createServer(app)
+const server = createServer(app)
 const ws = new WS(server)
 
 server

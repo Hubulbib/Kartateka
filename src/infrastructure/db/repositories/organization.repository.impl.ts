@@ -25,6 +25,9 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
 
   async getOneById(organizationId: number): Promise<OrganizationEntity> {
     const organization = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } })
+    if (!organization) {
+      throw ApiError.NotFound('Организации не существует')
+    }
     return await this.convertToFullEntity(organization)
   }
 
@@ -40,7 +43,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     })
 
     return result.map((el) => {
-      const { tools, posts, type, address, ...organization } = OrganizationMapper.toDomain(el, [], [])
+      const { tools, posts, type, address, ...organization } = OrganizationMapper.toDomain(el, [], [], [])
       return organization
     })
   }
@@ -97,12 +100,13 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
       organization,
       await FactoryRepos.getToolRepository().getAll(organization.organization_id),
       await FactoryRepos.getPostRepository().getAll(organization.organization_id),
+      await FactoryRepos.getItemRepository().getAll(organization.organization_id),
     )
   }
 
   async checkAccess(userId: string, organizationId: number): Promise<void> {
     const user = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } }).users()
-    if (user.user_id !== userId) {
+    if (user && user.user_id !== userId) {
       throw ApiError.NotAccess('Это не ваша организация')
     }
   }

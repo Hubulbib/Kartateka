@@ -66,6 +66,7 @@ export class OrganizationService {
     await this.organizationRepository.removeOne(organizationId)
   }
 
+  // Only admin can create, edit and delete organization
   private checkAccess = async (userId: string): Promise<boolean> => {
     return ['admin'].includes(await this.userRepository.getType(userId))
   }

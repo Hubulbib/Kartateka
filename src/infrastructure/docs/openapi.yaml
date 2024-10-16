@@ -10,6 +10,8 @@ tags:
     description: Всё, что касается организаций
   - name: post
     description: Всё, что касается публикаций (постов)
+  - name: item
+    description: Всё, что касается товаров
 paths:
   /users/register:
     post:
@@ -114,7 +116,7 @@ paths:
         '404':
           description: Пользователь отсутствует
 
-  /organizations/{id}:
+  /org/{id}:
     get:
       tags:
         - organization
@@ -126,7 +128,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: Поиск выполнен успешно
@@ -150,7 +152,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       requestBody:
         content:
           multipart/form-data:
@@ -192,7 +194,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: Удаление выполнено успешно
@@ -201,7 +203,7 @@ paths:
         '404':
           description: Организация не найдена
 
-  /organizations:
+  /org:
     post:
       security:
         - bearerAuth: [ ]
@@ -246,7 +248,7 @@ paths:
         '401':
           description: У вас нет прав
 
-  /organizations/{id}/favorite:
+  /org/{id}/favorite:
     post:
       security:
         - bearerAuth: [ ]
@@ -260,7 +262,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: Добавление выполнено успешно
@@ -278,7 +280,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: Удаление выполнено успешно
@@ -323,7 +325,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: Поиск выполнен успешно
@@ -347,7 +349,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       requestBody:
         content:
           multipart/form-data:
@@ -395,7 +397,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       requestBody:
         content:
           multipart/form-data:
@@ -439,7 +441,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: Удаление выполнено успешно
@@ -462,13 +464,167 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: Добавление выполнено успешно
         '404':
           description: Пост не найден
 
+
+  /org-item/{id}:
+    get:
+      tags:
+        - item
+      summary: Получение всех товаров организации по ID
+      operationId: get-all-item-by-id
+      parameters:
+        - name: org_id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - item
+      summary: Создание нового товара
+      operationId: create-item
+      parameters:
+        - name: org_id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - type
+              properties:
+                name:
+                  type: string
+                  description: Название товара
+                type:
+                  type: string
+                  enum:
+                    - drink
+                    - dish
+                    - baker_goods
+                    - confectionery
+                image:
+                  format: binary
+                  description: Фото товара
+                price:
+                  type: number
+                  description: Стоимость товара
+                description:
+                  type: string
+                  description: Описание товара
+                volumes:
+                  type: array
+                  description: Размеры товара
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Создание выполнено успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '401':
+          description: У вас нет прав
+
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - item
+      summary: Изменение данных товара
+      operationId: patch-item
+      parameters:
+        - name: id
+          description: ID товара
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Название товара
+                type:
+                  type: string
+                  enum:
+                    - drink
+                    - dish
+                    - baker_goods
+                    - confectionery
+                image:
+                  format: binary
+                  description: Фото товара
+                price:
+                  type: number
+                  description: Стоимость товара
+                description:
+                  type: string
+                  description: Описание товара
+                volumes:
+                  type: array
+                  description: Размеры товара
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Изменение выполнено успешно
+        '401':
+          description: У вас нет прав
+        '404':
+          description: Товар не найден
+
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - item
+      summary: Удаление товара
+      operationId: delete-item
+      parameters:
+        - name: id
+          description: ID товара
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Удаление выполнено успешно
+        '401':
+          description: У вас нет прав
+        '404':
+          description: Товар не найден
 
 components:
   securitySchemes:
@@ -633,7 +789,7 @@ components:
       enum:
         - image
         - video
-        -
+        - gif
 
     Tool:
       type: object
@@ -655,3 +811,43 @@ components:
         content:
           type: object
           description: Реализация виджета в JSON формате
+
+    Item:
+      type: object
+      required:
+        - itemId
+        - organizationId
+        - name
+        - type
+      properties:
+        itemId:
+          type: number
+          description: ID товара
+        organizationId:
+          type: number
+          description: ID организации
+        name:
+          type: string
+          description: Название товара
+        type:
+          type: string
+          description: Тип товара
+          enum:
+            - drink
+            - dish
+            - baker_goods
+            - confectionery
+        image:
+          type: string
+          description: Фото товара
+        price:
+          type: number
+          description: Стоимость товара
+        description:
+          type: string
+          description: Описание товара
+        volumes:
+          type: array
+          description: Размеры товара
+          items:
+            type: string

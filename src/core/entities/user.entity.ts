@@ -1,5 +1,5 @@
-import { OrganizationEntity } from './organization.entity'
-import { PostEntity } from './post.entity'
+import { OrganizationEntity } from './organization.entity.js'
+import { PostEntity } from './post.entity.js'
 
 export class UserEntity {
   constructor(

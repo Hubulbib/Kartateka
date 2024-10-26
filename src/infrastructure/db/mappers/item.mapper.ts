@@ -1,5 +1,5 @@
 import { items } from '@prisma/client'
-import { EItemType, ItemEntity } from '../../../core/entities/item.entity'
+import { EItemType, ItemEntity } from '../../../core/entities/item.entity.js'
 
 export class ItemMapper {
   static toDomain(entity: items, volumes: string[]): ItemEntity {

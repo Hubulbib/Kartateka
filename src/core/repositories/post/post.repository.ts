@@ -1,6 +1,6 @@
-import { CreateBodyDto } from './dtos/create-body.dto'
-import { EditBodyDto } from './dtos/edit-body.dto'
-import { PostEntity, type PostEntityShort } from '../../entities/post.entity'
+import { CreateBodyDto } from './dtos/create-body.dto.js'
+import { EditBodyDto } from './dtos/edit-body.dto.js'
+import { PostEntity, type PostEntityShort } from '../../entities/post.entity.js'
 
 export interface PostRepository {
   getAll: (organizationId: number) => Promise<PostEntity[]>

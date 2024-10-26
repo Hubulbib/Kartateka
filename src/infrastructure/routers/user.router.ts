@@ -1,8 +1,8 @@
 import { NextFunction, Response, Router } from 'express'
-import { userController } from '../controllers/user.controller'
-import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { AuthMiddleware } from '../middlewares/auth/auth.middleware'
-import { RoleMiddleware } from '../middlewares/role/role.middleware'
+import { userController } from '../controllers/user.controller.js'
+import { IAuthRequest } from '../interfaces/auth.request.interface.js'
+import { AuthMiddleware } from '../middlewares/auth/auth.middleware.js'
+import { RoleMiddleware } from '../middlewares/role/role.middleware.js'
 
 const router = Router()
 

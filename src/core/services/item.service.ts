@@ -1,8 +1,8 @@
-import { ItemEntity } from '../entities/item.entity'
-import { EditBodyDto } from '../repositories/item/dtos/edit-body.dto'
-import { ItemRepository } from '../repositories/item/item.repository'
-import { CreateBodyDto } from '../repositories/item/dtos/create-body.dto'
-import { OrganizationRepository } from '../repositories/organization/organization.repository'
+import { ItemEntity } from '../entities/item.entity.js'
+import { EditBodyDto } from '../repositories/item/dtos/edit-body.dto.js'
+import { ItemRepository } from '../repositories/item/item.repository.js'
+import { CreateBodyDto } from '../repositories/item/dtos/create-body.dto.js'
+import { OrganizationRepository } from '../repositories/organization/organization.repository.js'
 
 export class ItemService {
   constructor(

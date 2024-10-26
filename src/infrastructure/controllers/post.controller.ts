@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
-import { PostService } from '../../core/services/post.service'
-import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { FactoryRepos } from '../db/repositories'
-import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
-import { StorageService } from '../../core/services/storage.service'
-import { storage } from '../storage'
-import { CacheRepositoryImpl } from '../cache/repositories/cache.repository.impl'
-import { cacheClient } from '../cache'
+import { PostService } from '../../core/services/post.service.js'
+import { IAuthRequest } from '../interfaces/auth.request.interface.js'
+import { FactoryRepos } from '../db/repositories/index.js'
+import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl.js'
+import { StorageService } from '../../core/services/storage.service.js'
+import { storage } from '../storage/index.js'
+import { CacheRepositoryImpl } from '../cache/repositories/cache.repository.impl.js'
+import { cacheClient } from '../cache/index.js'
 
 class PostController {
   constructor(private readonly postService: PostService) {}

@@ -1,5 +1,5 @@
-import { MediaEntity } from '../../entities/media.entity'
-import { CreateBodyDto } from './dtos/create-body.dto'
+import { MediaEntity } from '../../entities/media.entity.js'
+import { CreateBodyDto } from './dtos/create-body.dto.js'
 
 export interface MediaRepository {
   getAll: (postId: number) => Promise<MediaEntity[]>

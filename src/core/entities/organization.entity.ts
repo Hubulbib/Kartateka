@@ -1,6 +1,6 @@
-import { ToolEntity } from './tool.entity'
-import { PostEntity } from './post.entity'
-import { ItemEntity } from './item.entity'
+import { ToolEntity } from './tool.entity.js'
+import { PostEntity } from './post.entity.js'
+import { ItemEntity } from './item.entity.js'
 
 export class OrganizationEntity {
   constructor(

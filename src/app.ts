@@ -1,17 +1,18 @@
 import express from 'express'
 import cors from 'cors'
 import { serve, setup } from 'swagger-ui-express'
+import { createServer } from 'http'
 import YAML from 'yamljs'
 import 'dotenv/config.js'
-import { prisma } from './infrastructure/db'
-import { userRouter } from './infrastructure/routers/user.router'
-import { postRouter } from './infrastructure/routers/post.router'
-import { organizationRouter } from './infrastructure/routers/organization.router'
-import { itemRouter } from './infrastructure/routers/item.router'
-import { docsPath } from './infrastructure/docs'
-import { cacheClient } from './infrastructure/cache'
-import { WS } from './infrastructure/ws'
-import { createServer } from 'http'
+
+import { prisma } from './infrastructure/db/index.js'
+import { userRouter } from './infrastructure/routers/user.router.js'
+import { postRouter } from './infrastructure/routers/post.router.js'
+import { organizationRouter } from './infrastructure/routers/organization.router.js'
+import { itemRouter } from './infrastructure/routers/item.router.js'
+import { docsPath } from './infrastructure/docs/index.js'
+import { cacheClient } from './infrastructure/cache/index.js'
+import { WS } from './infrastructure/ws/index.js'
 
 const app = express()
 const PORT = process.env.PORT

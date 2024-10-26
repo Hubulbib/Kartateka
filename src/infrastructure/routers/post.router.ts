@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { postController } from '../controllers/post.controller'
-import { AuthMiddleware } from '../middlewares/auth/auth.middleware'
-import { RoleMiddleware } from '../middlewares/role/role.middleware'
-import { PostValidator } from '../validators/post.validator'
+import { IAuthRequest } from '../interfaces/auth.request.interface.js'
+import { postController } from '../controllers/post.controller.js'
+import { AuthMiddleware } from '../middlewares/auth/auth.middleware.js'
+import { RoleMiddleware } from '../middlewares/role/role.middleware.js'
+import { PostValidator } from '../validators/post.validator.js'
 
 const router = Router()
 

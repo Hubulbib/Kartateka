@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { type NextFunction, type Request, type Response } from 'express'
-import { ApiError } from '../../exceptions/api.exception'
+import { ApiError } from '../../exceptions/api.exception.js'
 import 'dotenv/config.js'
 
 export const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {

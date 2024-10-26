@@ -1,7 +1,7 @@
-import { OrganizationRepository } from '../repositories/organization/organization.repository'
-import { PostRepository } from '../repositories/post/post.repository'
-import { type OrganizationEntitySearch } from '../entities/organization.entity'
-import { type PostEntityShort } from '../entities/post.entity'
+import { OrganizationRepository } from '../repositories/organization/organization.repository.js'
+import { PostRepository } from '../repositories/post/post.repository.js'
+import { type OrganizationEntitySearch } from '../entities/organization.entity.js'
+import { type PostEntityShort } from '../entities/post.entity.js'
 
 export class SearchService {
   constructor(

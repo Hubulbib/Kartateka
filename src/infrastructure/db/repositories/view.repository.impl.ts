@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
-import { ViewRepository } from '../../../core/repositories/view/view.repository'
-import { ViewMapper } from '../mappers/view.mapper'
+import { ViewRepository } from '../../../core/repositories/view/view.repository.js'
+import { ViewMapper } from '../mappers/view.mapper.js'
 
 export class ViewRepositoryImpl implements ViewRepository {
   constructor(private readonly viewRepository: Prisma.viewsDelegate) {}

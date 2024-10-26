@@ -1,4 +1,4 @@
-import { MediaEntity } from './media.entity'
+import { MediaEntity } from './media.entity.js'
 
 export class PostEntity {
   constructor(

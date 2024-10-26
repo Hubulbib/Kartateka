@@ -1,5 +1,5 @@
-import { ToolEntity } from '../../entities/tool.entity'
-import { CreateBodyDto } from './dtos/create-body.dto'
+import { ToolEntity } from '../../entities/tool.entity.js'
+import { CreateBodyDto } from './dtos/create-body.dto.js'
 
 export interface ToolRepository {
   getAll: (organizationId: number) => Promise<ToolEntity[]>

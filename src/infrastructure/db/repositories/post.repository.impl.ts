@@ -1,11 +1,11 @@
 import { posts, Prisma } from '@prisma/client'
-import { PostRepository } from '../../../core/repositories/post/post.repository'
-import { PostEntity, type PostEntityShort } from '../../../core/entities/post.entity'
-import { CreateBodyDto } from '../../../core/repositories/post/dtos/create-body.dto'
-import { EditBodyDto } from '../../../core/repositories/post/dtos/edit-body.dto'
-import { PostMapper } from '../mappers/post.mapper'
-import { ApiError } from '../../exceptions/api.exception'
-import { FactoryRepos } from './index'
+import { PostRepository } from '../../../core/repositories/post/post.repository.js'
+import { PostEntity, type PostEntityShort } from '../../../core/entities/post.entity.js'
+import { CreateBodyDto } from '../../../core/repositories/post/dtos/create-body.dto.js'
+import { EditBodyDto } from '../../../core/repositories/post/dtos/edit-body.dto.js'
+import { PostMapper } from '../mappers/post.mapper.js'
+import { ApiError } from '../../exceptions/api.exception.js'
+import { FactoryRepos } from './index.js'
 
 export class PostRepositoryImpl implements PostRepository {
   constructor(private readonly postRepository: Prisma.postsDelegate) {}

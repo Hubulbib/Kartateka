@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client'
-import { ItemEntity } from '../../../core/entities/item.entity'
-import { ItemRepository } from '../../../core/repositories/item/item.repository'
-import { EditBodyDto } from '../../../core/repositories/item/dtos/edit-body.dto'
-import { CreateBodyDto } from '../../../core/repositories/item/dtos/create-body.dto'
-import { ItemMapper } from '../mappers/item.mapper'
-import { ApiError } from '../../exceptions/api.exception'
-import { FactoryRepos } from './index'
+import { ItemEntity } from '../../../core/entities/item.entity.js'
+import { ItemRepository } from '../../../core/repositories/item/item.repository.js'
+import { EditBodyDto } from '../../../core/repositories/item/dtos/edit-body.dto.js'
+import { CreateBodyDto } from '../../../core/repositories/item/dtos/create-body.dto.js'
+import { ItemMapper } from '../mappers/item.mapper.js'
+import { ApiError } from '../../exceptions/api.exception.js'
+import { FactoryRepos } from './index.js'
 
 export class ItemRepositoryImpl implements ItemRepository {
   constructor(private readonly itemRepository: Prisma.itemsDelegate) {}

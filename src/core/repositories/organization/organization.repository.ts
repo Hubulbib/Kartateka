@@ -1,6 +1,6 @@
-import { OrganizationEntity, type OrganizationEntitySearch } from '../../entities/organization.entity'
-import { CreateBodyDto } from './dtos/create-body.dto'
-import { EditBodyDto } from './dtos/edit-body.dto'
+import { OrganizationEntity, type OrganizationEntitySearch } from '../../entities/organization.entity.js'
+import { CreateBodyDto } from './dtos/create-body.dto.js'
+import { EditBodyDto } from './dtos/edit-body.dto.js'
 
 export interface OrganizationRepository {
   getAll: (userId: string) => Promise<OrganizationEntity[]>

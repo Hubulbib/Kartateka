@@ -1,6 +1,6 @@
 import { posts } from '@prisma/client'
-import { PostEntity } from '../../../core/entities/post.entity'
-import { MediaEntity } from '../../../core/entities/media.entity'
+import { PostEntity } from '../../../core/entities/post.entity.js'
+import { MediaEntity } from '../../../core/entities/media.entity.js'
 
 export class PostMapper {
   static toDomain(entity: posts, views: number, tags: string[], media: MediaEntity[]): PostEntity {

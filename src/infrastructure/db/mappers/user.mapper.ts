@@ -1,5 +1,5 @@
 import { users } from '@prisma/client'
-import { EUserType, UserEntity } from '../../../core/entities/user.entity'
+import { EUserType, UserEntity } from '../../../core/entities/user.entity.js'
 
 export class UserMapper {
   static toDomain(entity: users): Pick<UserEntity, 'userId' | 'type'> {

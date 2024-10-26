@@ -1,4 +1,4 @@
-import { CreateBodyDto as MediaCreateBodyDto } from '../../media/dtos/create-body.dto'
+import { CreateBodyDto as MediaCreateBodyDto } from '../../media/dtos/create-body.dto.js'
 
 export class EditBodyDto {
   constructor(

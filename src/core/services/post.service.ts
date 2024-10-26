@@ -1,13 +1,13 @@
 import { type UploadedFile } from 'express-fileupload'
-import { PostRepository } from '../repositories/post/post.repository'
-import { EditBodyDto } from '../repositories/post/dtos/edit-body.dto'
-import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto'
-import { PostEntity, type PostEntityShort } from '../entities/post.entity'
-import { StorageService } from './storage.service'
-import { ApiError } from '../../infrastructure/exceptions/api.exception'
-import { UserRepository } from '../repositories/user/user.repository'
-import { ViewRepository } from '../repositories/view/view.repository'
-import { CacheRepository } from '../repositories/cache/cache.repository'
+import { PostRepository } from '../repositories/post/post.repository.js'
+import { EditBodyDto } from '../repositories/post/dtos/edit-body.dto.js'
+import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto.js'
+import { PostEntity, type PostEntityShort } from '../entities/post.entity.js'
+import { StorageService } from './storage.service.js'
+import { ApiError } from '../../infrastructure/exceptions/api.exception.js'
+import { UserRepository } from '../repositories/user/user.repository.js'
+import { ViewRepository } from '../repositories/view/view.repository.js'
+import { CacheRepository } from '../repositories/cache/cache.repository.js'
 
 export class PostService {
   constructor(

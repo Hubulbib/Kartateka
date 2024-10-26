@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express'
 import fileUpload from 'express-fileupload'
 import { body } from 'express-validator'
-import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { ApiError } from '../exceptions/api.exception'
+import { IAuthRequest } from '../interfaces/auth.request.interface.js'
+import { ApiError } from '../exceptions/api.exception.js'
 
 export class PostValidator {
   static createOne = (req: IAuthRequest, res: Response, next: NextFunction) => {

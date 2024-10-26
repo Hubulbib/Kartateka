@@ -1,6 +1,6 @@
 import { UploadedFile } from 'express-fileupload'
-import { StorageRepository } from '../repositories/storage/storage.repository'
-import { EMediaType } from '../entities/media.entity'
+import { StorageRepository } from '../repositories/storage/storage.repository.js'
+import { EMediaType } from '../entities/media.entity.js'
 
 export class StorageService {
   constructor(private readonly storageRepository: StorageRepository) {}

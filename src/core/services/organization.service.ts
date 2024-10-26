@@ -1,11 +1,11 @@
-import { OrganizationEntity } from '../entities/organization.entity'
-import { OrganizationRepository } from '../repositories/organization/organization.repository'
-import { EditBodyDto } from '../repositories/organization/dtos/edit-body.dto'
-import { CreateBodyDto } from '../repositories/organization/dtos/create-body.dto'
 import { UploadedFile } from 'express-fileupload'
-import { StorageService } from './storage.service'
-import { ApiError } from '../../infrastructure/exceptions/api.exception'
-import { UserRepository } from '../repositories/user/user.repository'
+import { OrganizationEntity } from '../entities/organization.entity.js'
+import { OrganizationRepository } from '../repositories/organization/organization.repository.js'
+import { EditBodyDto } from '../repositories/organization/dtos/edit-body.dto.js'
+import { CreateBodyDto } from '../repositories/organization/dtos/create-body.dto.js'
+import { StorageService } from './storage.service.js'
+import { ApiError } from '../../infrastructure/exceptions/api.exception.js'
+import { UserRepository } from '../repositories/user/user.repository.js'
 
 export class OrganizationService {
   constructor(

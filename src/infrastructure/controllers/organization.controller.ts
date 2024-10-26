@@ -1,11 +1,11 @@
 import { Response, NextFunction, Request } from 'express'
 import { UploadedFile } from 'express-fileupload'
-import { FactoryRepos } from '../db/repositories'
-import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { OrganizationService } from '../../core/services/organization.service'
-import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl'
-import { StorageService } from '../../core/services/storage.service'
-import { storage } from '../storage'
+import { FactoryRepos } from '../db/repositories/index.js'
+import { IAuthRequest } from '../interfaces/auth.request.interface.js'
+import { OrganizationService } from '../../core/services/organization.service.js'
+import { StorageRepositoryImpl } from '../storage/repositories/storage.repository.impl.js'
+import { StorageService } from '../../core/services/storage.service.js'
+import { storage } from '../storage/index.js'
 
 class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}

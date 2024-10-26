@@ -1,5 +1,5 @@
-import { VolumeRepository } from '../../../core/repositories/volume/volume.repository'
 import { Prisma } from '@prisma/client'
+import { VolumeRepository } from '../../../core/repositories/volume/volume.repository.js'
 
 export class VolumeRepositoryImpl implements VolumeRepository {
   constructor(private readonly volumeRepository: Prisma.volumesDelegate) {}

@@ -3,14 +3,14 @@ import {
   EOrganizationType,
   OrganizationEntity,
   type OrganizationEntitySearch,
-} from '../../../core/entities/organization.entity'
-import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-body.dto'
-import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto'
-import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository'
-import { OrganizationMapper } from '../mappers/organization.mapper'
-import { EUserType } from '../../../core/entities/user.entity'
-import { ApiError } from '../../exceptions/api.exception'
-import { FactoryRepos } from './index'
+} from '../../../core/entities/organization.entity.js'
+import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-body.dto.js'
+import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto.js'
+import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository.js'
+import { OrganizationMapper } from '../mappers/organization.mapper.js'
+import { EUserType } from '../../../core/entities/user.entity.js'
+import { ApiError } from '../../exceptions/api.exception.js'
+import { FactoryRepos } from './index.js'
 
 export class OrganizationRepositoryImpl implements OrganizationRepository {
   constructor(private readonly organizationRepository: Prisma.organizationsDelegate) {}

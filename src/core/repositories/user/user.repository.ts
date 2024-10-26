@@ -1,7 +1,7 @@
-import { PostEntity } from '../../entities/post.entity'
-import { RegisterBodyDto } from './dtos/register-body.dto'
-import { UserEntityShort } from '../../entities/user.entity'
-import { OrganizationEntity } from '../../entities/organization.entity'
+import { PostEntity } from '../../entities/post.entity.js'
+import { RegisterBodyDto } from './dtos/register-body.dto.js'
+import { UserEntityShort } from '../../entities/user.entity.js'
+import { OrganizationEntity } from '../../entities/organization.entity.js'
 
 export interface UserRepository {
   register: (registerBody: RegisterBodyDto) => Promise<UserEntityShort>

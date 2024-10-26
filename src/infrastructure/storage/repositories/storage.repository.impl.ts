@@ -3,9 +3,10 @@ import { createReadStream, unlinkSync } from 'fs'
 import { S3 } from '@aws-sdk/client-s3'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { StorageRepository } from '../../../core/repositories/storage/storage.repository'
-import { genUuid } from '../../utils/generate.util'
-import { BUCKET_NAME, STORAGE_BASE } from '../index'
+import { StorageRepository } from '../../../core/repositories/storage/storage.repository.js'
+import { genUuid } from '../../utils/generate.util.js'
+import { BUCKET_NAME, STORAGE_BASE } from '../index.js'
+import.meta.url
 
 export class StorageRepositoryImpl implements StorageRepository {
   constructor(private readonly storageRepository: S3) {}

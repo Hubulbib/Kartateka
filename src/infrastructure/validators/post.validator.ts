@@ -6,7 +6,6 @@ import { ApiError } from '../exceptions/api.exception.js'
 
 export class PostValidator {
   static createOne = (req: IAuthRequest, res: Response, next: NextFunction) => {
-    fileUpload({ limits: { files: 5 } })
     if (!req.files['media']) {
       next(ApiError.BadRequest('Файлы отсутствуют'))
     }
@@ -18,7 +17,6 @@ export class PostValidator {
   }
 
   static editOne = (req: IAuthRequest, res: Response, next: NextFunction) => {
-    fileUpload({ limits: { files: 5 } })
     if (!req.files['media']) {
       next(ApiError.BadRequest('Файлы отсутствуют'))
     }

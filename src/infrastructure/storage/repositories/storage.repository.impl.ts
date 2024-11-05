@@ -14,7 +14,6 @@ export class StorageRepositoryImpl implements StorageRepository {
   async uploadFile(file: UploadedFile): Promise<string> {
     const [filePath, fileId] = this.getPathFile(file.name.split('.').pop())
     await file.mv(filePath)
-
     const fileStream = createReadStream(filePath)
     const params = {
       Bucket: BUCKET_NAME,

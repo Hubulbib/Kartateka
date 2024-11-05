@@ -85,7 +85,8 @@ export class PostRepositoryImpl implements PostRepository {
       data: { ...postCreateBody, organizations: { connect: { organization_id: organizationId } } },
     })
     // creating tags of post
-    const createdTags = await FactoryRepos.getTagRepository().createManyForPost(post.post_id, createBody.tags)
+    let createdTags: { name: string; tag_id: number }[] = []
+    if (tags.length > 0) createdTags = await FactoryRepos.getTagRepository().createManyForPost(post.post_id, tags)
     // creating media of post
     await FactoryRepos.getMediaRepository().createMany(post.post_id, media)
 
@@ -101,9 +102,9 @@ export class PostRepositoryImpl implements PostRepository {
     // updating post
     await this.postRepository.update({ where: { post_id: postId }, data: { ...postEditBody, updated_at: new Date() } })
     // updating tags
-    await FactoryRepos.getTagRepository().editMany(postId, tags)
+    if (tags.length > 0) await FactoryRepos.getTagRepository().editMany(postId, tags)
     // updating media
-    await FactoryRepos.getMediaRepository().editMany(postId, media)
+    if (media.length > 0) await FactoryRepos.getMediaRepository().editMany(postId, media)
   }
 
   async removeOne(postId: number): Promise<void> {
@@ -125,7 +126,7 @@ export class PostRepositoryImpl implements PostRepository {
     return PostMapper.toDomain(
       post,
       await FactoryRepos.getViewRepository().getCount(post.post_id),
-      post.posts_tags.map((el) => el.tags.name),
+      post.posts_tags.length > 0 ? post.posts_tags.map((el) => el.tags.name) : [],
       await FactoryRepos.getMediaRepository().getAll(post.post_id),
     )
   }

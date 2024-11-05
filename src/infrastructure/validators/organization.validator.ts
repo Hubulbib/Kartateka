@@ -7,7 +7,6 @@ import { EOrganizationType } from '../../core/entities/organization.entity.js'
 
 export class OrganizationValidator {
   static createOne = (req: IAuthRequest, res: Response, next: NextFunction) => {
-    fileUpload({ limits: { files: 1, fileSize: 10 * 10 ** 6 } })
     if (!req.files['avatar']) {
       next(ApiError.BadRequest('Файл отсутствует'))
     }
@@ -19,7 +18,6 @@ export class OrganizationValidator {
   }
 
   static editOne = (req: IAuthRequest, res: Response, next: NextFunction) => {
-    fileUpload({ limits: { files: 1, fileSize: 10 * 10 ** 6 } })
     if (!req.files['avatar']) {
       next(ApiError.BadRequest('Файл отсутствует'))
     }

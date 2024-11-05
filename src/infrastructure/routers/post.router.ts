@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express'
+import fileUpload from 'express-fileupload'
 import { IAuthRequest } from '../interfaces/auth.request.interface.js'
 import { postController } from '../controllers/post.controller.js'
 import { AuthMiddleware } from '../middlewares/auth/auth.middleware.js'
@@ -26,13 +27,13 @@ router.post(
 
 router.post(
   '/:id',
-  [AuthMiddleware, RoleMiddleware.isUser, PostValidator.createOne],
+  [fileUpload({ limits: { files: 5 } }), AuthMiddleware, RoleMiddleware.isUser, PostValidator.createOne],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await postController.createOne(req, res, next),
 )
 
 router.patch(
   '/:id',
-  [AuthMiddleware, RoleMiddleware.isUser, PostValidator.editOne],
+  [fileUpload({ limits: { files: 5 } }), AuthMiddleware, RoleMiddleware.isUser, PostValidator.editOne],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await postController.editOne(req, res, next),
 )
 

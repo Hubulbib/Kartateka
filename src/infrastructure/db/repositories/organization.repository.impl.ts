@@ -20,7 +20,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     if (!organizations) {
       return []
     }
-    return Promise.all(organizations.map(async (el) => await this.convertToFullEntity(el)))
+    return await Promise.all(organizations.map(async (el) => await this.convertToFullEntity(el)))
   }
 
   async getOneById(organizationId: number): Promise<OrganizationEntity> {
@@ -67,7 +67,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     })
 
     // creating tools of organization
-    await FactoryRepos.getToolRepository().createMany(organization.organization_id, tools)
+    if (createBody['tools']) await FactoryRepos.getToolRepository().createMany(organization.organization_id, tools)
 
     return await this.convertToFullEntity(organization)
   }

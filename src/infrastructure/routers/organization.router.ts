@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express'
+import fileUpload from 'express-fileupload'
 import { organizationController } from '../controllers/organization.controller.js'
 import { IAuthRequest } from '../interfaces/auth.request.interface.js'
 import { AuthMiddleware } from '../middlewares/auth/auth.middleware.js'
@@ -14,7 +15,12 @@ router.get(
 
 router.post(
   '/',
-  [AuthMiddleware, RoleMiddleware.isAdminOrHead, OrganizationValidator.createOne],
+  [
+    fileUpload({ limits: { files: 1, fileSize: 10 * 10 ** 6 } }),
+    AuthMiddleware,
+    RoleMiddleware.isAdminOrHead,
+    OrganizationValidator.createOne,
+  ],
   async (req: IAuthRequest, res: Response, next: NextFunction) =>
     await organizationController.createOne(req, res, next),
 )
@@ -35,7 +41,12 @@ router.delete(
 
 router.patch(
   '/:id',
-  [AuthMiddleware, RoleMiddleware.isAdminOrHead, OrganizationValidator.editOne],
+  [
+    fileUpload({ limits: { files: 1, fileSize: 10 * 10 ** 6 } }),
+    AuthMiddleware,
+    RoleMiddleware.isAdminOrHead,
+    OrganizationValidator.editOne,
+  ],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await organizationController.editOne(req, res, next),
 )
 

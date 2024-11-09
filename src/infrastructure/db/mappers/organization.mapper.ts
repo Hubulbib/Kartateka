@@ -15,6 +15,7 @@ export class OrganizationMapper {
       entity.organization_id,
       entity.avatar,
       entity.name,
+      entity.description,
       EOrganizationType[entity.type],
       entity.address,
       tools,

@@ -166,6 +166,9 @@ paths:
                 name:
                   type: string
                   description: Название организации
+                description:
+                  type: string
+                  description: Описание организации
                 type:
                   $ref: '#/components/schemas/OrganizationType'
                 address:
@@ -219,6 +222,7 @@ paths:
               required:
                 - avatar
                 - name
+                - description
                 - type
                 - address
               properties:
@@ -229,6 +233,9 @@ paths:
                 name:
                   type: string
                   description: Название организации
+                description:
+                  type: string
+                  description: Описание организации
                 type:
                   $ref: '#/components/schemas/OrganizationType'
                 address:

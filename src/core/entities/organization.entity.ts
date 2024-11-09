@@ -7,6 +7,7 @@ export class OrganizationEntity {
     readonly organizationId: number,
     readonly avatar: string,
     readonly name: string,
+    readonly description: string,
     readonly type: EOrganizationType,
     readonly address: string,
     readonly tools: ToolEntity[],

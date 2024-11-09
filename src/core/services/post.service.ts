@@ -41,7 +41,7 @@ export class PostService {
   createOne = async (
     userId: string,
     organizationId: number,
-    createBody: CreateBodyDto,
+    createBody: Omit<CreateBodyDto, 'media'>,
     files?: UploadedFile[],
   ): Promise<PostEntity> => {
     if (!(await this.checkAccess(userId))) {

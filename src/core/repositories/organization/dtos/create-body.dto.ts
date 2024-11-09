@@ -4,6 +4,7 @@ import { CreateBodyDto as ToolCreateBodyDto } from '../../tool/dtos/create-body.
 export class CreateBodyDto {
   constructor(
     readonly name: string,
+    readonly description: string,
     readonly avatar: string,
     readonly type: EOrganizationType,
     readonly address: string,

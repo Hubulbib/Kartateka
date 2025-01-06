@@ -1,27 +1,51 @@
 import { organizations, Prisma } from '@prisma/client'
-import { EOrganizationType, OrganizationEntity } from '../../../core/entities/organization.entity'
-import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-body.dto'
-import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto'
-import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository'
-import { OrganizationMapper } from '../mappers/organization.mapper'
-import { EUserType } from '../../../core/entities/user.entity'
-import { ApiError } from '../../exceptions/api.exception'
-import { FactoryRepos } from './index'
+import {
+  EOrganizationType,
+  OrganizationEntity,
+  type OrganizationEntitySearch,
+} from '../../../core/entities/organization.entity.js'
+import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-body.dto.js'
+import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto.js'
+import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository.js'
+import { OrganizationMapper } from '../mappers/organization.mapper.js'
+import { EUserType } from '../../../core/entities/user.entity.js'
+import { ApiError } from '../../exceptions/api.exception.js'
+import { FactoryRepos } from './index.js'
 
 export class OrganizationRepositoryImpl implements OrganizationRepository {
   constructor(private readonly organizationRepository: Prisma.organizationsDelegate) {}
 
   async getAll(userId: string): Promise<OrganizationEntity[]> {
-    return Promise.all(
-      (await this.organizationRepository.findMany({ where: { user_id: userId } })).map(
-        async (el) => await this.convertToFullEntity(el),
-      ),
-    )
+    const organizations = await this.organizationRepository.findMany({ where: { user_id: userId } })
+    if (!organizations) {
+      return []
+    }
+    return await Promise.all(organizations.map(async (el) => await this.convertToFullEntity(el)))
   }
 
   async getOneById(organizationId: number): Promise<OrganizationEntity> {
     const organization = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } })
+    if (!organization) {
+      throw ApiError.NotFound('Организации не существует')
+    }
     return await this.convertToFullEntity(organization)
+  }
+
+  async searchByText(queryText: string): Promise<OrganizationEntitySearch[]> {
+    const result = await this.organizationRepository.findMany({
+      where: {
+        name: {
+          contains: queryText,
+        },
+      },
+      take: 5,
+      orderBy: { name: 'asc' },
+    })
+
+    return result.map((el) => {
+      const { tools, posts, type, address, ...organization } = OrganizationMapper.toDomain(el, [], [], [])
+      return organization
+    })
   }
 
   async createOne(userId: string, createBody: CreateBodyDto): Promise<OrganizationEntity> {
@@ -43,7 +67,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     })
 
     // creating tools of organization
-    await FactoryRepos.getToolRepository().createMany(organization.organization_id, tools)
+    if (createBody['tools']) await FactoryRepos.getToolRepository().createMany(organization.organization_id, tools)
 
     return await this.convertToFullEntity(organization)
   }
@@ -67,8 +91,8 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     await FactoryRepos.getFavoriteRepository().createOne(userId, organizationId)
   }
 
-  async setNotFavorite(userId: string, favoriteId: number, organizationId: number): Promise<void> {
-    await FactoryRepos.getFavoriteRepository().removeOne(userId, favoriteId, organizationId)
+  async setNotFavorite(userId: string, organizationId: number): Promise<void> {
+    await FactoryRepos.getFavoriteRepository().removeOne(userId, organizationId)
   }
 
   private async convertToFullEntity(organization: organizations): Promise<OrganizationEntity> {
@@ -76,12 +100,13 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
       organization,
       await FactoryRepos.getToolRepository().getAll(organization.organization_id),
       await FactoryRepos.getPostRepository().getAll(organization.organization_id),
+      await FactoryRepos.getItemRepository().getAll(organization.organization_id),
     )
   }
 
   async checkAccess(userId: string, organizationId: number): Promise<void> {
     const user = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } }).users()
-    if (user.user_id !== userId) {
+    if (user && user.user_id !== userId) {
       throw ApiError.NotAccess('Это не ваша организация')
     }
   }

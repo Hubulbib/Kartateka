@@ -1,0 +1,860 @@
+openapi: 3.0.3
+info:
+  title: KARTATEKA API
+  version: 1.0.0
+  description: API веб-приложения KARTATEKA. Все пути начинаются с `/api`
+tags:
+  - name: user
+    description: Все, что касается пользователей
+  - name: organization
+    description: Всё, что касается организаций
+  - name: post
+    description: Всё, что касается публикаций (постов)
+  - name: item
+    description: Всё, что касается товаров
+paths:
+  /users/register:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - user
+      summary: Регистрация пользователя в системе
+      operationId: user-register
+      responses:
+        '201':
+          description: Регистрация выполнена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/favorite-list:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: Получение избранных организаций пользователя
+      operationId: get-favorite-list
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+          description: Поиск выполнен успешно
+        '404':
+          description: Пользователь отсутствует
+
+  /users/viewed-list:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: Получение просмотренных пользователем публикаций
+      operationId: get-viewed-list
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '404':
+          description: Пользователь отсутствует
+
+  /users/type:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: Получение типа (роли) пользователя
+      operationId: get-user-type
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - basic
+                  - business
+                  - admin
+        '404':
+          description: Пользователь отсутствует
+
+  /users/{id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: Получение пользователя по ID
+      operationId: get-user-by-id
+      parameters:
+        - name: id
+          description: ID пользователя
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Пользователь отсутствует
+
+  /org/{id}:
+    get:
+      tags:
+        - organization
+      summary: Получение данных об организации по ID
+      operationId: get-organization-by-id
+      parameters:
+        - name: id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '404':
+          description: Организация отсутствует
+    
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - organization
+      summary: Изменение данных организации
+      operationId: patch-organization
+      parameters:
+        - name: id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: Изображение организации
+                name:
+                  type: string
+                  description: Название организации
+                description:
+                  type: string
+                  description: Описание организации
+                type:
+                  $ref: '#/components/schemas/OrganizationType'
+                address:
+                  type: string
+                  description: Адрес организации
+                tools:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Tool'
+      responses:
+        '200':
+          description: Изменение выполнено успешно
+        '401':
+          description: У вас нет прав
+
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - organization
+      summary: Удаление организации
+      operationId: delete-organization
+      parameters:
+        - name: id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Удаление выполнено успешно
+        '401':
+          description: У вас нет прав
+        '404':
+          description: Организация не найдена
+
+  /org:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - organization
+      summary: Создание новой организации
+      operationId: create-organization
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - avatar
+                - name
+                - description
+                - type
+                - address
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: Изображение организации
+                name:
+                  type: string
+                  description: Название организации
+                description:
+                  type: string
+                  description: Описание организации
+                type:
+                  $ref: '#/components/schemas/OrganizationType'
+                address:
+                  type: string
+                  description: Адрес организации
+                tools:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Tool'
+      responses:
+        '201':
+          description: Создание выполнено успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '401':
+          description: У вас нет прав
+
+  /org/{id}/favorite:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - organization
+      summary: Добавление организации в избранное
+      operationId: create-organization-favorite
+      parameters:
+        - name: id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Добавление выполнено успешно
+        '404':
+          description: Организация не найдена
+
+    delete:
+      tags:
+        - organization
+      summary: Удаление организации из избранных
+      operationId: delete-organization-favorite
+      parameters:
+        - name: id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Удаление выполнено успешно
+        '404':
+          description: Организация не найдена
+
+  /posts/recommended:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - post
+      summary: Получение рекомендованных пользователю постов
+      operationId: get-post-by-id
+      parameters:
+        - name: limit
+          description: Количество постов
+          in: query
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
+
+  /posts/{id}:
+    get:
+      tags:
+        - post
+      summary: Получение данных поста по ID
+      operationId: get-post-by-id
+      parameters:
+        - name: id
+          description: ID поста
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Пост отсутствует
+
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - post
+      summary: Создание нового поста
+      operationId: create-post
+      parameters:
+        - name: id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - media
+              properties:
+                media:
+                  type: array
+                  items:
+                    format: binary
+                    description: Медиа-файлы поста
+                title:
+                  type: string
+                  description: Заголовок поста
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: Теги поста
+                text:
+                  type: string
+                  description: Текст поста
+      responses:
+        '201':
+          description: Создание выполнено успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '401':
+          description: У вас нет прав
+
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - post
+      summary: Изменение данных поста
+      operationId: patch-post
+      parameters:
+        - name: id
+          description: ID поста
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                media:
+                  type: array
+                  items:
+                    format: binary
+                    description: Медиа-файлы поста
+                title:
+                  type: string
+                  description: Заголовок поста
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: Теги поста
+                text:
+                  type: string
+                  description: Текст поста
+      responses:
+        '200':
+          description: Изменение выполнено успешно
+        '401':
+          description: У вас нет прав
+        '404':
+          description: Пост не найден
+
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - post
+      summary: Удаление поста
+      operationId: delete-post
+      parameters:
+        - name: id
+          description: ID поста
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Удаление выполнено успешно
+        '401':
+          description: У вас нет прав
+        '404':
+          description: Пост не найден
+
+  /posts/{id}/viewed:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - post
+      summary: Добавление поста в просмотренные
+      operationId: post-post-viewed
+      parameters:
+        - name: id
+          description: ID поста
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Добавление выполнено успешно
+        '404':
+          description: Пост не найден
+
+
+  /org-item/{id}:
+    get:
+      tags:
+        - item
+      summary: Получение всех товаров организации по ID
+      operationId: get-all-item-by-id
+      parameters:
+        - name: org_id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - item
+      summary: Создание нового товара
+      operationId: create-item
+      parameters:
+        - name: org_id
+          description: ID организации
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - type
+              properties:
+                name:
+                  type: string
+                  description: Название товара
+                type:
+                  type: string
+                  enum:
+                    - drink
+                    - dish
+                    - baker_goods
+                    - confectionery
+                image:
+                  format: binary
+                  description: Фото товара
+                price:
+                  type: number
+                  description: Стоимость товара
+                description:
+                  type: string
+                  description: Описание товара
+                volumes:
+                  type: array
+                  description: Размеры товара
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Создание выполнено успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '401':
+          description: У вас нет прав
+
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - item
+      summary: Изменение данных товара
+      operationId: patch-item
+      parameters:
+        - name: id
+          description: ID товара
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Название товара
+                type:
+                  type: string
+                  enum:
+                    - drink
+                    - dish
+                    - baker_goods
+                    - confectionery
+                image:
+                  format: binary
+                  description: Фото товара
+                price:
+                  type: number
+                  description: Стоимость товара
+                description:
+                  type: string
+                  description: Описание товара
+                volumes:
+                  type: array
+                  description: Размеры товара
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Изменение выполнено успешно
+        '401':
+          description: У вас нет прав
+        '404':
+          description: Товар не найден
+
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - item
+      summary: Удаление товара
+      operationId: delete-item
+      parameters:
+        - name: id
+          description: ID товара
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Удаление выполнено успешно
+        '401':
+          description: У вас нет прав
+        '404':
+          description: Товар не найден
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Ожидается access-токен, выдаваемый при регистрации пользователя
+      bearerFormat: jwt
+  schemas:
+    User:
+      type: object
+      required:
+        - userId
+        - type
+        - organizations
+        - views
+        - favorites
+      properties:
+        userId:
+          type: string
+          description: ID пользователя
+        type:
+          type: string
+          description: Тип (роль) пользователя
+        organizations:
+          type: object
+          description: Организации пользователя
+        views:
+          type: object
+          description: Просмотренные пользователем посты
+        favorites:
+          type: object
+          description: Избранные организации пользователя
+
+    Organization:
+      type: object
+      required:
+        - organizationId
+        - avatar
+        - name
+        - type
+        - address
+        - tools
+        - posts
+      properties:
+        organizationId:
+          type: number
+          description: ID организации
+        avatar:
+          type: string
+          description: Ссылка на изображение организации
+        name:
+          type: string
+          description: Название организации
+        type:
+          type: string
+          enum:
+            - coffee
+            - cafe
+            - restaurant
+            - tea
+          description: Тип организации
+        address:
+          type: string
+          description: Адрес организации
+        tools:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tool'
+          description: Виджеты организации
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+          description: Посты организации
+
+    OrganizationType:
+      type: string
+      enum:
+        - coffee
+        - cafe
+        - restaurant
+        - tea
+    
+    Post:
+      type: object
+      required:
+        - postId
+        - organizationId
+        - views
+        - createdAt
+        - updatedAt
+        - media
+      properties:
+        postId:
+          type: number
+          description: ID поста
+        organizationId:
+          type: number
+          description: ID организации
+        views:
+          type: number
+          description: Количество просмотров поста
+        createdAt:
+          type: string
+          description: Дата создания поста
+        updatedAt:
+          type: string
+          description: Дата обновления поста
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/Media'
+          description: Ссылки на медиа-файлы поста
+        title:
+          type: string
+          description: Заголовок поста
+        text:
+          type: string
+          description: Текст поста
+        tags:
+          type: array
+          items:
+            type: string
+          description: Теги поста
+
+    Media:
+      type: object
+      required:
+        - mediaId
+        - postId
+        - url
+        - type
+        - number
+        - createdAt
+      properties:
+        mediaId:
+          type: number
+          description: ID медиа-файла
+        postId:
+          type: number
+          description: ID поста
+        url:
+          type: string
+          description: Ссылка на медиа-файл
+        type:
+          type: string
+          description: Тип медиа-файла
+          enum:
+            - image
+            - video
+            - gif
+        number:
+          type: number
+          description: Порядковый номер медиа-файла
+        createdAt:
+          type: string
+          description: Дата создания медиа-файла
+
+    MediaType:
+      type: string
+      enum:
+        - image
+        - video
+        - gif
+
+    Tool:
+      type: object
+      required:
+        - toolId
+        - organizationId
+        - name
+        - content
+      properties:
+        toolId:
+          type: number
+          description: ID виджета
+        organizationId:
+          type: number
+          description: ID организации
+        name:
+          type: string
+          description: Название виджета
+        content:
+          type: object
+          description: Реализация виджета в JSON формате
+
+    Item:
+      type: object
+      required:
+        - itemId
+        - organizationId
+        - name
+        - type
+      properties:
+        itemId:
+          type: number
+          description: ID товара
+        organizationId:
+          type: number
+          description: ID организации
+        name:
+          type: string
+          description: Название товара
+        type:
+          type: string
+          description: Тип товара
+          enum:
+            - drink
+            - dish
+            - baker_goods
+            - confectionery
+        image:
+          type: string
+          description: Фото товара
+        price:
+          type: number
+          description: Стоимость товара
+        description:
+          type: string
+          description: Описание товара
+        volumes:
+          type: array
+          description: Размеры товара
+          items:
+            type: string

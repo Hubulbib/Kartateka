@@ -4,6 +4,7 @@ export class MediaEntity {
     readonly postId: number,
     readonly url: string,
     readonly type: EMediaType,
+    readonly number: number,
     readonly createdAt: Date,
   ) {}
 }

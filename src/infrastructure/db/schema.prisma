@@ -33,13 +33,14 @@ model favorites {
   users             users         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__user_id_foreign")
   organizations     organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "favorites__organization_id_foreign")
 
-  @@id([favorite_id, user_id, organization_id])
+  @@id([user_id, organization_id])
 }
 
 model media {
   media_id   Int        @id @default(autoincrement())
   url        String     @unique(map: "media_url_unique") @db.VarChar(10000)
   type       mediatype?
+  number     Int
   created_at DateTime   @db.Timestamptz(0) @default(now())
   post_id    Int
   posts      posts      @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "media_post_id_foreign")
@@ -48,41 +49,48 @@ model media {
 model organizations {
   organization_id Int               @id @default(autoincrement())
   name            String            @unique(map: "organizations_name_unique") @db.VarChar(255)
+  description     String            @db.Text
   type            organizationtype
+  avatar          String
   address         String            @db.VarChar(255)
   user_id         String
   users           users             @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "organizations_user_id_foreign")
   posts           posts[]
   tools           tools[]
   favorites       favorites[]
+  items           items[]
+
+  @@index([name])
 }
 
 model posts {
   post_id         Int           @id @default(autoincrement())
   organization_id Int
-  title           String        @db.VarChar(255)
-  text            String?
+  title           String?       @db.VarChar(255)   @default("")
+  text            String?                          @default("")
   created_at      DateTime      @db.Timestamptz(0) @default(now())
   updated_at      DateTime      @db.Timestamptz(0) @default(now())
   media           media[]
   organizations   organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_organization_id_foreign")
   posts_tags      posts_tags[]
   views           views[]
+
+  @@index([title, text])
 }
 
 model posts_tags {
-  id      Int   @default(autoincrement())
+  id      Int                   @default(autoincrement())
   post_id Int
   tag_id  Int
-  posts   posts @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_post_id_foreign")
-  tags    tags  @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_tag_id_foreign")
+  posts   posts                 @relation(fields: [post_id], references: [post_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_post_id_foreign")
+  tags    tags                  @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction, map: "posts_tags_tag_id_foreign")
 
   @@id([id, post_id, tag_id])
 }
 
 model tags {
-  tag_id     Int          @id @default(autoincrement())
-  name       String       @unique(map: "tags_name_unique") @db.VarChar(255)
+  tag_id     Int                @id @default(autoincrement())
+  name       String             @unique(map: "tags_name_unique") @db.VarChar(255)
   posts_tags posts_tags[]
 }
 
@@ -92,6 +100,27 @@ model tools {
   content         Json
   organization_id Int
   organizations   organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "tools_organization_id_foreign")
+}
+
+model items {
+  item_id         Int           @id @default(autoincrement())
+  name            String        @unique(map: "items_name_unique")
+  description     String?       @default("")
+  image           String?       @default("")
+  price           Int?
+  type            itemtype
+  volumes         volumes[]
+  organization_id Int
+  organizations   organizations @relation(fields: [organization_id], references: [organization_id], onDelete: NoAction, onUpdate: NoAction, map: "items_organization_id_foreign")
+
+  @@index([name, description])
+}
+
+model volumes {
+  volume_id     Int             @id @default(autoincrement())
+  name          String
+  item_id       Int
+  items         items           @relation(fields: [item_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "volumes_items_id_foreign")
 }
 
 enum mediatype {
@@ -110,4 +139,12 @@ enum organizationtype {
 enum usertype {
   basic
   business
+  admin
+}
+
+enum itemtype {
+  drink
+  dish
+  baker_goods
+  confectionery
 }

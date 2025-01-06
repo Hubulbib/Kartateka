@@ -1,5 +1,5 @@
-import { OrganizationEntity } from './organization.entity'
-import { PostEntity } from './post.entity'
+import { OrganizationEntity } from './organization.entity.js'
+import { PostEntity } from './post.entity.js'
 
 export class UserEntity {
   constructor(
@@ -11,7 +11,10 @@ export class UserEntity {
   ) {}
 }
 
+export type UserEntityShort = Pick<UserEntity, 'userId' | 'type'>
+
 export enum EUserType {
   basic = 'basic',
   business = 'business',
+  admin = 'admin',
 }

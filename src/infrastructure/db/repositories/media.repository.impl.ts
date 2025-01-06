@@ -1,14 +1,14 @@
 import { mediatype, Prisma } from '@prisma/client'
-import { MediaRepository } from '../../../core/repositories/media/media.repository'
-import { CreateBodyDto } from '../../../core/repositories/media/dtos/create-body.dto'
-import { MediaEntity } from '../../../core/entities/media.entity'
-import { MediaMapper } from '../mappers/media.mapper'
+import { MediaRepository } from '../../../core/repositories/media/media.repository.js'
+import { CreateBodyDto } from '../../../core/repositories/media/dtos/create-body.dto.js'
+import { MediaEntity } from '../../../core/entities/media.entity.js'
+import { MediaMapper } from '../mappers/media.mapper.js'
 
 export class MediaRepositoryImpl implements MediaRepository {
   constructor(private readonly mediaRepository: Prisma.mediaDelegate) {}
 
   async getAll(postId: number): Promise<MediaEntity[]> {
-    const media = await this.mediaRepository.findMany({ where: { post_id: postId }, orderBy: { created_at: 'desc' } })
+    const media = await this.mediaRepository.findMany({ where: { post_id: postId }, orderBy: { number: 'asc' } })
     return media.map((el) => MediaMapper.toDomain(el))
   }
 

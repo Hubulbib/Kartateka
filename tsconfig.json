@@ -5,15 +5,16 @@
     "forceConsistentCasingInFileNames": true,
     "rootDir": "./src",
     "target": "ES2022",
-    "module": "ESNext",
+    "module": "ES2022",
     "lib": [
       "ES2022", "ESNext"
     ],
-    "types": ["Node"],
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "removeComments": true,
-    "outDir": "./build",
+    "outDir": "./dist",
     "sourceMap": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -31,7 +32,7 @@
   },
   "exclude": [
     "node_modules",
-    "build",
+    "dist",
     "**/*.test.ts",
     "**/*.spec.ts"
   ]

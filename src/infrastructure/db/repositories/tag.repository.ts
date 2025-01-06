@@ -1,5 +1,5 @@
 import { Prisma, tags } from '@prisma/client'
-import { FactoryRepos } from './index'
+import { FactoryRepos } from './index.js'
 
 export class TagRepository {
   constructor(private readonly tagRepository: Prisma.tagsDelegate) {}

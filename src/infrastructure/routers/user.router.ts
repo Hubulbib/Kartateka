@@ -1,7 +1,8 @@
 import { NextFunction, Response, Router } from 'express'
-import { userController } from '../controllers/user.controller'
-import { IAuthRequest } from '../interfaces/auth.request.interface'
-import { AuthMiddleware } from '../middlewares/authMiddleware/auth.middleware'
+import { userController } from '../controllers/user.controller.js'
+import { IAuthRequest } from '../interfaces/auth.request.interface.js'
+import { AuthMiddleware } from '../middlewares/auth/auth.middleware.js'
+import { RoleMiddleware } from '../middlewares/role/role.middleware.js'
 
 const router = Router()
 
@@ -19,13 +20,13 @@ router.post(
 
 router.get(
   '/favorite-list',
-  [AuthMiddleware],
+  [AuthMiddleware, RoleMiddleware.isUser],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.getFavoriteList(req, res, next),
 )
 
 router.get(
   '/viewed-list',
-  [AuthMiddleware],
+  [AuthMiddleware, RoleMiddleware.isUser],
   async (req: IAuthRequest, res: Response, next: NextFunction) => await userController.getViewedList(req, res, next),
 )
 

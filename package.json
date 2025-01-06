@@ -8,11 +8,13 @@
     "schema": "./src/infrastructure/db/schema.prisma"
   },
   "scripts": {
-    "prod:start": "npm run build && node build/app.js",
+    "prod:start": "npm run build && node dist/app.js",
     "dev:server": "npx nodemon",
-    "build": "rimraf ./build && npx tsc",
+    "build": "npx tsc && npm run copy:openapi",
+    "copy:openapi": "copyfiles -u 3 src/infrastructure/docs/openapi.yaml dist/infrastructure/docs/",
     "lint": "npx eslint src/*",
-    "format": "npx eslint 'src/**/*.ts' --fix"
+    "format": "npx eslint 'src/**/*.ts' --fix",
+    "test": "npx jest"
   },
   "keywords": [
     "node.js",
@@ -21,16 +23,22 @@
   "author": "CONCEPT",
   "license": "ISC",
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.17",
+    "@types/express-fileupload": "^1.5.1",
     "@types/express-validator": "^3.0.0",
+    "@types/jest": "^29.5.13",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^20.4.5",
+    "@types/node": "^20.16.13",
+    "@types/redis": "^4.0.11",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
+    "@types/ws": "^8.5.12",
+    "@types/yamljs": "^0.2.34",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
-    "dotenv": "^16.3.1",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
@@ -38,20 +46,33 @@
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^4.0.0-beta1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
-    "prisma": "^5.17.0",
     "rimraf": "^5.0.1",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.1",
+    "tsx": "^4.19.2",
     "typescript": "5.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.17.0",
+    "@aws-sdk/client-s3": "^3.654.0",
+    "@prisma/client": "^5.21.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-fileupload": "^1.5.1",
     "express-validator": "^7.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^5.21.1",
+    "redis": "^4.7.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "ws": "^8.18.0",
+    "yamljs": "^0.3.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8"
   }
 }

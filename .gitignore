@@ -5,5 +5,4 @@ dist
 src/infrastructure/db/migrations/*/
 src/infrastructure/storage/static/*/
 .env
-__tests__
 redisdata

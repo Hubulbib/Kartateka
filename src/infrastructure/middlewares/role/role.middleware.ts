@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express'
-import { IAuthRequest } from '../../interfaces/auth.request.interface.js'
-import { ApiError } from '../../exceptions/api.exception.js'
+import { IAuthRequest } from '../../interfaces/auth.request.interface'
+import { ApiError } from '../../exceptions/api.exception'
 
 export class RoleMiddleware {
   static isUnverified = (req: IAuthRequest, res: Response, next: NextFunction) => {

@@ -1,5 +1,5 @@
 import { createClient } from 'redis'
-import 'dotenv/config.js'
+import 'dotenv/config'
 
 export const cacheClient = await createClient({ url: process.env.CACHE_CLIENT })
   .on('error', (err) => console.log('Redis Client Error', err))

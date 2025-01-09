@@ -1,11 +1,11 @@
 import { posts, Prisma } from '@prisma/client'
-import { PostRepository } from '../../../core/repositories/post/post.repository.js'
-import { PostEntity, type PostEntityShort } from '../../../core/entities/post.entity.js'
-import { CreateBodyDto } from '../../../core/repositories/post/dtos/create-body.dto.js'
-import { EditBodyDto } from '../../../core/repositories/post/dtos/edit-body.dto.js'
-import { PostMapper } from '../mappers/post.mapper.js'
-import { ApiError } from '../../exceptions/api.exception.js'
-import { FactoryRepos } from './index.js'
+import { PostRepository } from '../../../core/repositories/post/post.repository'
+import { PostEntity, type PostEntityShort } from '../../../core/entities/post.entity'
+import { CreateBodyDto } from '../../../core/repositories/post/dtos/create-body.dto'
+import { EditBodyDto } from '../../../core/repositories/post/dtos/edit-body.dto'
+import { PostMapper } from '../mappers/post.mapper'
+import { ApiError } from '../../exceptions/api.exception'
+import { FactoryRepos } from './index'
 
 export class PostRepositoryImpl implements PostRepository {
   constructor(private readonly postRepository: Prisma.postsDelegate) {}
@@ -88,7 +88,7 @@ export class PostRepositoryImpl implements PostRepository {
     let createdTags: { name: string; tag_id: number }[] = []
     if (tags.length > 0) createdTags = await FactoryRepos.getTagRepository().createManyForPost(post.post_id, tags)
     // creating media of post
-    await FactoryRepos.getMediaRepository().createMany(post.post_id, media)
+    if (media.length > 0) await FactoryRepos.getMediaRepository().createMany(post.post_id, media)
 
     return await this.convertToFullEntity({ ...post, posts_tags: [...createdTags.map((el) => ({ tags: { ...el } }))] })
   }
@@ -149,7 +149,7 @@ export class PostRepositoryImpl implements PostRepository {
       .users()
 
     if (user.user_id !== userId) {
-      throw ApiError.NotAccess('Это не ваша запись')
+      // throw ApiError.NotAccess('Это не ваша запись')
     }
   }
 }

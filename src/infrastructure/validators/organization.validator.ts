@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express'
 import { body } from 'express-validator'
-import { IAuthRequest } from '../interfaces/auth.request.interface.js'
-import { ApiError } from '../exceptions/api.exception.js'
-import { EOrganizationType } from '../../core/entities/organization.entity.js'
+import { IAuthRequest } from '../interfaces/auth.request.interface'
+import { ApiError } from '../exceptions/api.exception'
+import { EOrganizationType } from '../../core/entities/organization.entity'
 
 export class OrganizationValidator {
   static createOne = (req: IAuthRequest, res: Response, next: NextFunction) => {

@@ -1,5 +1,5 @@
 import { tools } from '@prisma/client'
-import { ToolEntity } from '../../../core/entities/tool.entity.js'
+import { ToolEntity } from '../../../core/entities/tool.entity'
 
 export class ToolMapper {
   static toDomain(entity: tools): ToolEntity {

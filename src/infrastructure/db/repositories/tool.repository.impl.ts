@@ -1,8 +1,8 @@
 import { Prisma } from '@prisma/client'
-import { ToolMapper } from '../mappers/tool.mapper.js'
-import { ToolEntity } from '../../../core/entities/tool.entity.js'
-import { ToolRepository } from '../../../core/repositories/tool/tool.repository.js'
-import { CreateBodyDto } from '../../../core/repositories/tool/dtos/create-body.dto.js'
+import { ToolMapper } from '../mappers/tool.mapper'
+import { ToolEntity } from '../../../core/entities/tool.entity'
+import { ToolRepository } from '../../../core/repositories/tool/tool.repository'
+import { CreateBodyDto } from '../../../core/repositories/tool/dtos/create-body.dto'
 
 export class ToolRepositoryImpl implements ToolRepository {
   constructor(private readonly toolRepository: Prisma.toolsDelegate) {}

@@ -1,8 +1,8 @@
 import WebSocket, { WebSocketServer } from 'ws'
 import { type Server } from 'http'
-import { SearchService } from '../../core/services/search.service.js'
-import { FactoryRepos } from '../db/repositories/index.js'
-import 'dotenv/config.js'
+import { SearchService } from '../../core/services/search.service'
+import { FactoryRepos } from '../db/repositories/index'
+import 'dotenv/config'
 
 export class WS {
   private wss: WebSocket.Server

@@ -1,13 +1,13 @@
-import { UserRepository } from '../repositories/user/user.repository.js'
-import { EUserType, UserEntity, UserEntityShort } from '../entities/user.entity.js'
-import { OrganizationEntity } from '../entities/organization.entity.js'
-import { PostEntity } from '../entities/post.entity.js'
-import { RegisterBodyDto } from '../repositories/user/dtos/register-body.dto.js'
-import { ViewRepository } from '../repositories/view/view.repository.js'
-import { FavoriteRepository } from '../repositories/favorite/favorite.repository.js'
-import { OrganizationRepository } from '../repositories/organization/organization.repository.js'
-import { PostRepository } from '../repositories/post/post.repository.js'
-import { CacheRepository } from '../repositories/cache/cache.repository.js'
+import { UserRepository } from '../repositories/user/user.repository'
+import { EUserType, UserEntity, UserEntityShort } from '../entities/user.entity'
+import { OrganizationEntity } from '../entities/organization.entity'
+import { PostEntity } from '../entities/post.entity'
+import { RegisterBodyDto } from '../repositories/user/dtos/register-body.dto'
+import { ViewRepository } from '../repositories/view/view.repository'
+import { FavoriteRepository } from '../repositories/favorite/favorite.repository'
+import { OrganizationRepository } from '../repositories/organization/organization.repository'
+import { PostRepository } from '../repositories/post/post.repository'
+import { CacheRepository } from '../repositories/cache/cache.repository'
 
 export class UserService {
   constructor(
@@ -31,6 +31,17 @@ export class UserService {
   /*getSubscribe = async (userId: string): Promise<void> => {
     await this.userRepository.getSubscribe(userId)
   }*/
+
+  getOne = async (userId: string): Promise<UserEntity> => {
+    const user = await this.userRepository.getOneById(userId)
+
+    return {
+      ...user,
+      favorites: [],
+      organizations: [],
+      views: [],
+    }
+  }
 
   getOneById = async (userId: string): Promise<UserEntity> => {
     const cacheKey = this.cacheRepository.createKeyName('user', userId)

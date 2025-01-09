@@ -1,5 +1,5 @@
 import { media } from '@prisma/client'
-import { EMediaType, MediaEntity } from '../../../core/entities/media.entity.js'
+import { EMediaType, MediaEntity } from '../../../core/entities/media.entity'
 
 export class MediaMapper {
   static toDomain(entity: media): MediaEntity {

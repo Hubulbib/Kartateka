@@ -1,5 +1,5 @@
-import { CacheRepository } from '../../../core/repositories/cache/cache.repository.js'
-import { type CacheClient } from '../index.js'
+import { CacheRepository } from '../../../core/repositories/cache/cache.repository'
+import { type CacheClient } from '../index'
 
 export class CacheRepositoryImpl implements CacheRepository {
   constructor(private readonly cacheRepository: CacheClient) {}

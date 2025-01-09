@@ -1,12 +1,12 @@
 import { Prisma } from '@prisma/client'
-import { PostEntity } from '../../../core/entities/post.entity.js'
-import { type UserEntityShort } from '../../../core/entities/user.entity.js'
-import { OrganizationEntity } from '../../../core/entities/organization.entity.js'
-import { UserRepository } from '../../../core/repositories/user/user.repository.js'
-import { RegisterBodyDto } from '../../../core/repositories/user/dtos/register-body.dto.js'
-import { UserMapper } from '../mappers/user.mapper.js'
-import { FactoryRepos } from './index.js'
-import { ApiError } from '../../exceptions/api.exception.js'
+import { PostEntity } from '../../../core/entities/post.entity'
+import { type UserEntityShort } from '../../../core/entities/user.entity'
+import { OrganizationEntity } from '../../../core/entities/organization.entity'
+import { UserRepository } from '../../../core/repositories/user/user.repository'
+import { RegisterBodyDto } from '../../../core/repositories/user/dtos/register-body.dto'
+import { UserMapper } from '../mappers/user.mapper'
+import { FactoryRepos } from './index'
+import { ApiError } from '../../exceptions/api.exception'
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly userRepository: Prisma.usersDelegate) {}

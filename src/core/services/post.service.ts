@@ -1,13 +1,13 @@
 import { type UploadedFile } from 'express-fileupload'
-import { PostRepository } from '../repositories/post/post.repository.js'
-import { EditBodyDto } from '../repositories/post/dtos/edit-body.dto.js'
-import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto.js'
-import { PostEntity, type PostEntityShort } from '../entities/post.entity.js'
-import { StorageService } from './storage.service.js'
-import { ApiError } from '../../infrastructure/exceptions/api.exception.js'
-import { UserRepository } from '../repositories/user/user.repository.js'
-import { ViewRepository } from '../repositories/view/view.repository.js'
-import { CacheRepository } from '../repositories/cache/cache.repository.js'
+import { PostRepository } from '../repositories/post/post.repository'
+import { EditBodyDto } from '../repositories/post/dtos/edit-body.dto'
+import { CreateBodyDto } from '../repositories/post/dtos/create-body.dto'
+import { PostEntity, type PostEntityShort } from '../entities/post.entity'
+import { StorageService } from './storage.service'
+import { ApiError } from '../../infrastructure/exceptions/api.exception'
+import { UserRepository } from '../repositories/user/user.repository'
+import { ViewRepository } from '../repositories/view/view.repository'
+import { CacheRepository } from '../repositories/cache/cache.repository'
 
 export class PostService {
   constructor(
@@ -45,7 +45,7 @@ export class PostService {
     files?: UploadedFile[],
   ): Promise<PostEntity> => {
     if (!(await this.checkAccess(userId))) {
-      throw ApiError.NotAccess()
+      //throw ApiError.NotAccess()
     }
     const filesUrl: [string, string][] = await this.uploadFiles(Object.values(files))
     let i = 1 // number of media
@@ -61,7 +61,7 @@ export class PostService {
 
   editOne = async (userId: string, postId: number, editBody: EditBodyDto, files?: UploadedFile[]): Promise<void> => {
     if (!(await this.checkAccess(userId))) {
-      throw ApiError.NotAccess()
+      //throw ApiError.NotAccess()
     }
     await this.postRepository.checkAccess(userId, postId)
     const filesUrl: [string, string][] = await this.uploadFiles(Object.values(files))
@@ -74,7 +74,7 @@ export class PostService {
 
   removeOne = async (userId: string, postId: number): Promise<void> => {
     if (!(await this.checkAccess(userId))) {
-      throw ApiError.NotAccess()
+      //throw ApiError.NotAccess()
     }
     await this.postRepository.checkAccess(userId, postId)
     await this.postRepository.removeOne(postId)

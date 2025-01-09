@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client'
-import { ItemEntity } from '../../../core/entities/item.entity.js'
-import { ItemRepository } from '../../../core/repositories/item/item.repository.js'
-import { EditBodyDto } from '../../../core/repositories/item/dtos/edit-body.dto.js'
-import { CreateBodyDto } from '../../../core/repositories/item/dtos/create-body.dto.js'
-import { ItemMapper } from '../mappers/item.mapper.js'
-import { ApiError } from '../../exceptions/api.exception.js'
-import { FactoryRepos } from './index.js'
+import { ItemEntity } from '../../../core/entities/item.entity'
+import { ItemRepository } from '../../../core/repositories/item/item.repository'
+import { EditBodyDto } from '../../../core/repositories/item/dtos/edit-body.dto'
+import { CreateBodyDto } from '../../../core/repositories/item/dtos/create-body.dto'
+import { ItemMapper } from '../mappers/item.mapper'
+import { ApiError } from '../../exceptions/api.exception'
+import { FactoryRepos } from './index'
 
 export class ItemRepositoryImpl implements ItemRepository {
   constructor(private readonly itemRepository: Prisma.itemsDelegate) {}
@@ -31,7 +31,7 @@ export class ItemRepositoryImpl implements ItemRepository {
   }
 
   async createOne(organizationId: number, createBody: CreateBodyDto): Promise<ItemEntity> {
-    if (await this.itemRepository.findUnique({ where: { name: createBody.name } })) {
+    if (await this.itemRepository.findFirst({ where: { name: createBody.name } })) {
       throw ApiError.BadRequest('Товар уже есть')
     }
     const { volumes, ...itemBody } = createBody

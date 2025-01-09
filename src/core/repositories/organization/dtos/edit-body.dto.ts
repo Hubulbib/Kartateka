@@ -1,5 +1,5 @@
-import { CreateBodyDto } from '../../tool/dtos/create-body.dto.js'
-import { EOrganizationType } from '../../../entities/organization.entity.js'
+import { CreateBodyDto } from '../../tool/dtos/create-body.dto'
+import { EOrganizationType } from '../../../entities/organization.entity'
 
 export class EditBodyDto {
   constructor(

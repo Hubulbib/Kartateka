@@ -13,7 +13,7 @@ tags:
   - name: item
     description: Всё, что касается товаров
 paths:
-  /users/register:
+  /api/users/register:
     post:
       security:
         - bearerAuth: []
@@ -29,7 +29,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
-  /users/favorite-list:
+  /api/users/favorite-list:
     get:
       security:
         - bearerAuth: [ ]
@@ -49,7 +49,7 @@ paths:
         '404':
           description: Пользователь отсутствует
 
-  /users/viewed-list:
+  /api/users/viewed-list:
     get:
       security:
         - bearerAuth: [ ]
@@ -69,7 +69,7 @@ paths:
         '404':
           description: Пользователь отсутствует
 
-  /users/type:
+  /api/users/type:
     get:
       security:
         - bearerAuth: [ ]
@@ -91,7 +91,7 @@ paths:
         '404':
           description: Пользователь отсутствует
 
-  /users/{id}:
+  /api/users/{id}:
     get:
       security:
         - bearerAuth: [ ]
@@ -116,7 +116,7 @@ paths:
         '404':
           description: Пользователь отсутствует
 
-  /org/{id}:
+  /api/org/{id}:
     get:
       tags:
         - organization
@@ -206,7 +206,7 @@ paths:
         '404':
           description: Организация не найдена
 
-  /org:
+  /api/org:
     post:
       security:
         - bearerAuth: [ ]
@@ -255,7 +255,7 @@ paths:
         '401':
           description: У вас нет прав
 
-  /org/{id}/favorite:
+  /api/org/{id}/favorite:
     post:
       security:
         - bearerAuth: [ ]
@@ -294,7 +294,7 @@ paths:
         '404':
           description: Организация не найдена
 
-  /posts/recommended:
+  /api/posts/recommended:
     get:
       security:
         - bearerAuth: [ ]
@@ -320,7 +320,7 @@ paths:
                   $ref: '#/components/schemas/Post'
 
 
-  /posts/{id}:
+  /api/posts/{id}:
     get:
       tags:
         - post
@@ -457,7 +457,7 @@ paths:
         '404':
           description: Пост не найден
 
-  /posts/{id}/viewed:
+  /api/posts/{id}/viewed:
     post:
       security:
         - bearerAuth: [ ]
@@ -479,7 +479,7 @@ paths:
           description: Пост не найден
 
 
-  /org-item/{id}:
+  /api/org-item/{org_id}:
     get:
       tags:
         - item
@@ -518,7 +518,7 @@ paths:
             type: number
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               required:
@@ -536,7 +536,7 @@ paths:
                     - baker_goods
                     - confectionery
                 image:
-                  format: binary
+                  format: string
                   description: Фото товара
                 price:
                   type: number
@@ -575,7 +575,7 @@ paths:
             type: number
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
@@ -590,7 +590,7 @@ paths:
                     - baker_goods
                     - confectionery
                 image:
-                  format: binary
+                  format: string
                   description: Фото товара
                 price:
                   type: number

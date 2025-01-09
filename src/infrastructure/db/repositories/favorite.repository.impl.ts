@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
-import { FavoriteRepository } from '../../../core/repositories/favorite/favorite.repository.js'
-import { FavoriteMapper } from '../mappers/favorite.mapper.js'
+import { FavoriteRepository } from '../../../core/repositories/favorite/favorite.repository'
+import { FavoriteMapper } from '../mappers/favorite.mapper'
 
 export class FavoriteRepositoryImpl implements FavoriteRepository {
   constructor(private readonly favoriteRepository: Prisma.favoritesDelegate) {}

@@ -1,8 +1,8 @@
 import { mediatype, Prisma } from '@prisma/client'
-import { MediaRepository } from '../../../core/repositories/media/media.repository.js'
-import { CreateBodyDto } from '../../../core/repositories/media/dtos/create-body.dto.js'
-import { MediaEntity } from '../../../core/entities/media.entity.js'
-import { MediaMapper } from '../mappers/media.mapper.js'
+import { MediaRepository } from '../../../core/repositories/media/media.repository'
+import { CreateBodyDto } from '../../../core/repositories/media/dtos/create-body.dto'
+import { MediaEntity } from '../../../core/entities/media.entity'
+import { MediaMapper } from '../mappers/media.mapper'
 
 export class MediaRepositoryImpl implements MediaRepository {
   constructor(private readonly mediaRepository: Prisma.mediaDelegate) {}

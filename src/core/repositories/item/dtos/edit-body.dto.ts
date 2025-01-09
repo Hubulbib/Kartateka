@@ -1,4 +1,4 @@
-import { EItemType } from '../../../entities/item.entity.js'
+import { EItemType } from '../../../entities/item.entity'
 
 export class EditBodyDto {
   constructor(

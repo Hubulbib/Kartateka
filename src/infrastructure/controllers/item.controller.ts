@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from 'express'
-import { ItemService } from '../../core/services/item.service.js'
-import { IAuthRequest } from '../interfaces/auth.request.interface.js'
-import { FactoryRepos } from '../db/repositories/index.js'
+import { ItemService } from '../../core/services/item.service'
+import { IAuthRequest } from '../interfaces/auth.request.interface'
+import { FactoryRepos } from '../db/repositories/index'
 
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}

@@ -1,8 +1,8 @@
 import { organizations } from '@prisma/client'
-import { ToolEntity } from '../../../core/entities/tool.entity.js'
-import { PostEntity } from '../../../core/entities/post.entity.js'
-import { EOrganizationType, OrganizationEntity } from '../../../core/entities/organization.entity.js'
-import { ItemEntity } from '../../../core/entities/item.entity.js'
+import { ToolEntity } from '../../../core/entities/tool.entity'
+import { PostEntity } from '../../../core/entities/post.entity'
+import { EOrganizationType, OrganizationEntity } from '../../../core/entities/organization.entity'
+import { ItemEntity } from '../../../core/entities/item.entity'
 
 export class OrganizationMapper {
   static toDomain(

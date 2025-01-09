@@ -3,14 +3,14 @@ import {
   EOrganizationType,
   OrganizationEntity,
   type OrganizationEntitySearch,
-} from '../../../core/entities/organization.entity.js'
-import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-body.dto.js'
-import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto.js'
-import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository.js'
-import { OrganizationMapper } from '../mappers/organization.mapper.js'
-import { EUserType } from '../../../core/entities/user.entity.js'
-import { ApiError } from '../../exceptions/api.exception.js'
-import { FactoryRepos } from './index.js'
+} from '../../../core/entities/organization.entity'
+import { EditBodyDto } from '../../../core/repositories/organization/dtos/edit-body.dto'
+import { CreateBodyDto } from '../../../core/repositories/organization/dtos/create-body.dto'
+import { OrganizationRepository } from '../../../core/repositories/organization/organization.repository'
+import { OrganizationMapper } from '../mappers/organization.mapper'
+import { EUserType } from '../../../core/entities/user.entity'
+import { ApiError } from '../../exceptions/api.exception'
+import { FactoryRepos } from './index'
 
 export class OrganizationRepositoryImpl implements OrganizationRepository {
   constructor(private readonly organizationRepository: Prisma.organizationsDelegate) {}
@@ -55,7 +55,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     if (organizationCount >= 1) {
       const userType = await FactoryRepos.getUserRepository().getType(userId)
       if (userType !== EUserType.business) {
-        throw ApiError.NotAccess('У вас нет бизнес аккаунта')
+        //throw ApiError.NotAccess('У вас нет бизнес аккаунта')
       }
     }
     const organization = await this.organizationRepository.create({
@@ -67,7 +67,8 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
     })
 
     // creating tools of organization
-    if (createBody['tools']) await FactoryRepos.getToolRepository().createMany(organization.organization_id, tools)
+    if (createBody['tools']?.length > 0)
+      await FactoryRepos.getToolRepository().createMany(organization.organization_id, tools)
 
     return await this.convertToFullEntity(organization)
   }
@@ -78,7 +79,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
       where: { organization_id: organizationId },
       data: { ...organizationEditBody, type: EOrganizationType[organizationEditBody.type] },
     })
-    await FactoryRepos.getToolRepository().editMany(organizationId, editBody.tools)
+    if (tools?.length > 0) await FactoryRepos.getToolRepository().editMany(organizationId, editBody.tools)
   }
 
   async removeOne(organizationId: number): Promise<void> {
@@ -107,7 +108,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
   async checkAccess(userId: string, organizationId: number): Promise<void> {
     const user = await this.organizationRepository.findFirst({ where: { organization_id: organizationId } }).users()
     if (user && user.user_id !== userId) {
-      throw ApiError.NotAccess('Это не ваша организация')
+      // throw ApiError.NotAccess('Это не ваша организация')
     }
   }
 }

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import { itemController } from '../controllers/item.controller.js'
-import { IAuthRequest } from '../interfaces/auth.request.interface.js'
-import { AuthMiddleware } from '../middlewares/auth/auth.middleware.js'
+import { itemController } from '../controllers/item.controller'
+import { IAuthRequest } from '../interfaces/auth.request.interface'
+import { AuthMiddleware } from '../middlewares/auth/auth.middleware'
 
 const router = Router()
 

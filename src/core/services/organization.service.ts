@@ -1,11 +1,11 @@
 import { UploadedFile } from 'express-fileupload'
-import { OrganizationEntity } from '../entities/organization.entity.js'
-import { OrganizationRepository } from '../repositories/organization/organization.repository.js'
-import { EditBodyDto } from '../repositories/organization/dtos/edit-body.dto.js'
-import { CreateBodyDto } from '../repositories/organization/dtos/create-body.dto.js'
-import { StorageService } from './storage.service.js'
-import { ApiError } from '../../infrastructure/exceptions/api.exception.js'
-import { UserRepository } from '../repositories/user/user.repository.js'
+import { OrganizationEntity } from '../entities/organization.entity'
+import { OrganizationRepository } from '../repositories/organization/organization.repository'
+import { EditBodyDto } from '../repositories/organization/dtos/edit-body.dto'
+import { CreateBodyDto } from '../repositories/organization/dtos/create-body.dto'
+import { StorageService } from './storage.service'
+import { ApiError } from '../../infrastructure/exceptions/api.exception'
+import { UserRepository } from '../repositories/user/user.repository'
 
 export class OrganizationService {
   constructor(
@@ -24,7 +24,7 @@ export class OrganizationService {
     file: UploadedFile,
   ): Promise<OrganizationEntity> => {
     if (!(await this.checkAccess(userId))) {
-      throw ApiError.NotAccess()
+      //throw ApiError.NotAccess()
     }
     const [avatar] = await this.storageService.uploadFile(file)
     return await this.organizationRepository.createOne(userId, { ...createBody, avatar })
@@ -45,7 +45,7 @@ export class OrganizationService {
     file: UploadedFile,
   ): Promise<void> => {
     if (!(await this.checkAccess(userId))) {
-      throw ApiError.NotAccess()
+      //throw ApiError.NotAccess()
     }
     /*
     Checking if user can delete it himself
@@ -57,7 +57,7 @@ export class OrganizationService {
 
   removeOne = async (userId: string, organizationId: number): Promise<void> => {
     if (!(await this.checkAccess(userId))) {
-      throw ApiError.NotAccess()
+      //throw ApiError.NotAccess()
     }
     /*
     Checking if user can delete it himself

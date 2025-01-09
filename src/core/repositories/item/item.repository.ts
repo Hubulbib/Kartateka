@@ -1,6 +1,6 @@
-import { CreateBodyDto } from './dtos/create-body.dto.js'
-import { ItemEntity } from '../../entities/item.entity.js'
-import { EditBodyDto } from './dtos/edit-body.dto.js'
+import { CreateBodyDto } from './dtos/create-body.dto'
+import { ItemEntity } from '../../entities/item.entity'
+import { EditBodyDto } from './dtos/edit-body.dto'
 
 export interface ItemRepository {
   getAll: (organizationId: number) => Promise<ItemEntity[]>

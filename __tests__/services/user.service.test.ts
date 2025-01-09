@@ -11,6 +11,7 @@ import { ViewRepository } from '../../src/core/repositories/view/view.repository
 import { FavoriteRepository } from '../../src/core/repositories/favorite/favorite.repository'
 import { OrganizationRepository } from '../../src/core/repositories/organization/organization.repository'
 import { PostRepository } from '../../src/core/repositories/post/post.repository'
+import { CacheRepository } from '../../src/core/repositories/cache/cache.repository'
 
 describe('UserService', () => {
   let userService: UserService
@@ -19,6 +20,7 @@ describe('UserService', () => {
   let favoritePrismaRepository: FavoriteRepository
   let organizationPrismaRepository: OrganizationRepository
   let postPrismaRepository: PostRepository
+  let cacheRepository: CacheRepository
 
   beforeEach(() => {
     userPrismaRepository = FactoryRepos.getUserRepository()
@@ -28,6 +30,7 @@ describe('UserService', () => {
       favoritePrismaRepository,
       organizationPrismaRepository,
       postPrismaRepository,
+      cacheRepository,
     )
   })
 
@@ -50,48 +53,10 @@ describe('UserService', () => {
 
     prismaMock.users.findFirst.mockResolvedValue(mockUser)
 
-    const result = await userService.getOneById(userId)
+    const result = await userService.getOne(userId)
 
     expect(prismaMock.users.findFirst).toHaveBeenCalledWith({ where: { user_id: userId } })
     const { user_id, ...user } = mockUser
     expect(result).toEqual({ ...user, favorites: [], organizations: [], userId: user_id, views: [] })
-  })
-
-  it('it should get favorite list of user', async () => {
-    const userId: string = '1'
-    const mockFavorites = [
-      { user_id: '1', organization_id: 1, favorite_id: 1 },
-      { user_id: '1', organization_id: 2, favorite_id: 2 },
-    ]
-    const mockOrganization: organizations[] = [
-      {
-        user_id: '1',
-        organization_id: 1,
-        type: EOrganizationType.cafe,
-        avatar: 'https://s3.storage/1',
-        address: 'Москва, улица Таганская, 1',
-        name: 'Кафешка',
-      },
-      {
-        user_id: '1',
-        organization_id: 2,
-        type: EOrganizationType.restaurant,
-        avatar: 'https://s3.storage/2',
-        address: 'Москва, улица Петра Великого, 1123',
-        name: 'Ресторан',
-      },
-    ]
-
-    prismaMock.favorites.findMany.mockResolvedValue(mockFavorites)
-    prismaMock.organizations.findFirst.mockResolvedValueOnce(
-      mockOrganization.find((org) => org.organization_id === 1 || {}),
-    )
-
-    const result = await userService.getFavoriteList(userId)
-    expect(prismaMock.favorites.findMany).toHaveBeenCalledWith({ where: { user_id: userId } })
-    expect(prismaMock.organizations.findFirst).toHaveBeenCalledWith({ where: { organization_id: 1 } })
-    expect(prismaMock.organizations.findFirst).toHaveBeenCalledWith({ where: { organization_id: 2 } })
-
-    expect(result).toEqual(mockOrganization)
   })
 })

@@ -1,5 +1,5 @@
-import { prisma } from '../index.js'
-import { RepositoryFactory } from './factory.repository.index.js'
+import { prisma } from '../index'
+import { RepositoryFactory } from './factory.repository.index'
 
 export const FactoryRepos = new RepositoryFactory(
   prisma.users,
